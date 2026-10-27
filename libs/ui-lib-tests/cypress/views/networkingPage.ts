@@ -1,12 +1,12 @@
 export const networkingPage = {
   getUserManagedNetworking: () => {
-    return cy.get(Cypress.env('userManagedFieldRadioId'));
+    return cy.get(Cypress.expose('userManagedFieldRadioId'));
   },
   getClusterManagedNetworking: () => {
-    return cy.get(Cypress.env('clusterManagedFieldRadioId'));
+    return cy.get(Cypress.expose('clusterManagedFieldRadioId'));
   },
-  getVipDhcp: () => cy.get(Cypress.env('vipDhcpAllocationFieldId')),
-  getAdvancedNetwork: () => cy.get(Cypress.env('useAdvancednetworkingId')),
+  getVipDhcp: () => cy.get(Cypress.expose('vipDhcpAllocationFieldId')),
+  getAdvancedNetwork: () => cy.get(Cypress.expose('useAdvancednetworkingId')),
   getStackTypeSingleStack: () => {
     return cy.get('#form-radio-stackType-singleStack-field');
   },
@@ -17,11 +17,11 @@ export const networkingPage = {
     return cy.get('input[name="stackType"]');
   },
   setClusterSubnetCidr: () => {
-    cy.get(Cypress.env('hostSubnetFieldId'))
+    cy.get(Cypress.expose('hostSubnetFieldId'))
       .contains('/')
       .then((element) => {
         const text = element.text();
-        cy.get(Cypress.env('hostSubnetFieldId')).select(text);
+        cy.get(Cypress.expose('hostSubnetFieldId')).select(text);
       });
   },
   getClusterSubnetCidrIpv4: () => {
@@ -40,39 +40,39 @@ export const networkingPage = {
   },
   setHostInterfaceName: (idx) => {
     // host rows increment by 2
-    cy.newByDataTestId(`${Cypress.env('hostRowDataTestIdPrefix')}${idx}`).within(() => {
-      cy.newByDataTestId(Cypress.env('nicNameDataTestId')).then((nicName) => {
+    cy.newByDataTestId(`${Cypress.expose('hostRowDataTestIdPrefix')}${idx}`).within(() => {
+      cy.newByDataTestId(Cypress.expose('nicNameDataTestId')).then((nicName) => {
         const interfaceName = nicName.text();
         cy.log(`Interface Name: ${interfaceName}`);
-        Cypress.env(`interfaceName`, interfaceName);
+        Cypress.expose(`interfaceName`, interfaceName);
       });
     });
   },
   getShareSshKeyInput: () => {
-    return cy.get(Cypress.env('shareDiscoverySshKeyFieldId'));
+    return cy.get(Cypress.expose('shareDiscoverySshKeyFieldId'));
   },
   getSshKey: () => {
-    return cy.get(Cypress.env('inputSshPublicKeyFieldId'));
+    return cy.get(Cypress.expose('inputSshPublicKeyFieldId'));
   },
   validateSupportLimitation: () => {
-    cy.newByDataTestId(Cypress.env('networkingVmsAlert'))
+    cy.newByDataTestId(Cypress.expose('networkingVmsAlert'))
       .should('be.visible')
-      .should('contain.text', Cypress.env('vmsSupportLimitationText'));
+      .should('contain.text', Cypress.expose('vmsSupportLimitationText'));
   },
   validateBMnoSupportLimitation: () => {
-    cy.newByDataTestId(Cypress.env('networkingVmsAlert')).should('not.exist');
+    cy.newByDataTestId(Cypress.expose('networkingVmsAlert')).should('not.exist');
   },
   checkDhcpSupportLevel: () => {
-    cy.get(Cypress.env('vipAutoAllocSupportLevel'))
+    cy.get(Cypress.expose('vipAutoAllocSupportLevel'))
       .should('be.visible')
-      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
+      .should('contain.text', Cypress.expose('devPreviewSupportLevel'));
   },
-  waitForNetworkStatusToNotContain: (text, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
+  waitForNetworkStatusToNotContain: (text, timeout = Cypress.expose('HOST_READY_TIMEOUT')) => {
     cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
       cy.wrap(row).find('td[data-testid="host-status"]', { timeout }).should('not.contain', text),
     );
   },
-  waitForNetworkStatus: (status, timeout = Cypress.env('HOST_READY_TIMEOUT')) => {
+  waitForNetworkStatus: (status, timeout = Cypress.expose('HOST_READY_TIMEOUT')) => {
     cy.get('table.hosts-table > tbody > tr:not([hidden])').each((row) =>
       cy
         .wrap(row)
@@ -82,7 +82,7 @@ export const networkingPage = {
   },
   waitForHostNetworkStatusInsufficient: (
     idx,
-    timeout = Cypress.env('HOST_STATUS_INSUFFICIENT_TIMEOUT'),
+    timeout = Cypress.expose('HOST_STATUS_INSUFFICIENT_TIMEOUT'),
   ) => {
     // host row index starts at 0 and increments by 2
     cy.newByDataTestId(`host-row-${idx}`).within(() => {
@@ -90,18 +90,18 @@ export const networkingPage = {
     });
   },
   getClusterNetworkCidr: () => {
-    return cy.get(Cypress.env('clusterNetworkCidrFieldId'));
+    return cy.get(Cypress.expose('clusterNetworkCidrFieldId'));
   },
   getClusterNetworkPrefix: () => {
-    return cy.get(Cypress.env('clusterNetworks0HostPrefixFieldId'));
+    return cy.get(Cypress.expose('clusterNetworks0HostPrefixFieldId'));
   },
   getServiceCidr: () => {
-    return cy.get(Cypress.env('serviceNetworks0CidrFieldId'));
+    return cy.get(Cypress.expose('serviceNetworks0CidrFieldId'));
   },
   enableAdvancedNetworking: (
-    clusterCidr = Cypress.env('NETWORK_CIDR'),
-    networkPrefix = Cypress.env('NETWORK_HOST_PREFIX'),
-    serviceCidr = Cypress.env('SERVICE_NETWORK_CIDR'),
+    clusterCidr = Cypress.expose('NETWORK_CIDR'),
+    networkPrefix = Cypress.expose('NETWORK_HOST_PREFIX'),
+    serviceCidr = Cypress.expose('SERVICE_NETWORK_CIDR'),
   ) => {
     networkingPage.getAdvancedNetwork().scrollIntoView().check().should('be.checked');
     if (clusterCidr) {
@@ -139,8 +139,8 @@ export const networkingPage = {
     return cy.get('#form-input-ingressVips-1-ip-field');
   },
   inputApiVipIngressVip: (
-    apiVip = Cypress.env('API_VIP'),
-    ingressVip = Cypress.env('INGRESS_VIP'),
+    apiVip = Cypress.expose('API_VIP'),
+    ingressVip = Cypress.expose('INGRESS_VIP'),
   ) => {
     const fillField = (element, value) => {
       element.scrollIntoView().should('be.visible').fill(value).should('have.value', value);
@@ -153,8 +153,8 @@ export const networkingPage = {
     }
   },
   inputApiVipIngressVipSecondary: (
-    apiVip = Cypress.env('API_VIP'),
-    ingressVip = Cypress.env('INGRESS_VIP'),
+    apiVip = Cypress.expose('API_VIP'),
+    ingressVip = Cypress.expose('INGRESS_VIP'),
   ) => {
     const fillField = (element, value) => {
       element.scrollIntoView().should('be.visible').fill(value).should('have.value', value);
@@ -166,18 +166,18 @@ export const networkingPage = {
       fillField(networkingPage.getIngressVipFieldSecondary(), ingressVip);
     }
   },
-  inputClusterNetworkHostPrefix: (hostPrefix = Cypress.env('NETWORK_HOST_PREFIX')) => {
-    cy.get(Cypress.env('clusterNetworks0HostPrefixFieldId'))
+  inputClusterNetworkHostPrefix: (hostPrefix = Cypress.expose('NETWORK_HOST_PREFIX')) => {
+    cy.get(Cypress.expose('clusterNetworks0HostPrefixFieldId'))
       .fill(hostPrefix)
       .should('have.value', hostPrefix);
   },
-  inputClusterNetworkCidr: (networkCidr = Cypress.env('NETWORK_CIDR')) => {
-    cy.get(Cypress.env('clusterNetworkCidrFieldId'))
+  inputClusterNetworkCidr: (networkCidr = Cypress.expose('NETWORK_CIDR')) => {
+    cy.get(Cypress.expose('clusterNetworkCidrFieldId'))
       .fill(networkCidr)
       .should('have.value', networkCidr);
   },
-  inputServiceNetworkCidr: (serviceCidr = Cypress.env('SERVICE_NETWORK_CIDR')) => {
-    cy.get(Cypress.env('serviceNetworks0CidrFieldId'))
+  inputServiceNetworkCidr: (serviceCidr = Cypress.expose('SERVICE_NETWORK_CIDR')) => {
+    cy.get(Cypress.expose('serviceNetworks0CidrFieldId'))
       .fill(serviceCidr)
       .should('have.value', serviceCidr);
   },
@@ -197,9 +197,9 @@ export const networkingPage = {
       .type(ipv6ServiceNetworkCidr);
   },
   statusPopover: {
-    waitForPrimaryStatusButton: (idx, timeout = Cypress.env('WAIT_FOR_PRIMARY_STATUS_BUTTON')) => {
+    waitForPrimaryStatusButton: (idx, timeout = Cypress.expose('WAIT_FOR_PRIMARY_STATUS_BUTTON')) => {
       cy.get(
-        `[data-testid=host-row-${idx}] > ${Cypress.env(
+        `[data-testid=host-row-${idx}] > ${Cypress.expose(
           'nicStatus',
         )} > .pf-m-align-items-center > .pf-l-flex > .pf-v6-c-button`,
         { timeout: timeout },
@@ -207,7 +207,7 @@ export const networkingPage = {
     },
     open: (idx) => {
       cy.get(
-        `[data-testid=host-row-${idx}] > ${Cypress.env(
+        `[data-testid=host-row-${idx}] > ${Cypress.expose(
           'nicStatus',
         )} > .pf-m-align-items-center > .pf-l-flex > .pf-v6-c-button`,
       )
@@ -217,7 +217,7 @@ export const networkingPage = {
     },
     openSoftValidations: (idx) => {
       cy.get(
-        `[data-testid=host-row-${idx}] > ${Cypress.env(
+        `[data-testid=host-row-${idx}] > ${Cypress.expose(
           'nicStatus',
         )} > .pf-m-align-items-center > .pf-l-flex > .pf-v6-u-font-size-xs > .pf-v6-c-button`,
       )
@@ -226,7 +226,7 @@ export const networkingPage = {
     },
     validateAlertGroupItem: (
       msg,
-      timeout = Cypress.env('DNS_RESOLUTION_ALERT_MESSAGE_TIMEOUT'),
+      timeout = Cypress.expose('DNS_RESOLUTION_ALERT_MESSAGE_TIMEOUT'),
     ) => {
       cy.get(`li:contains('${msg}')`, { timeout: timeout });
     },
@@ -234,32 +234,32 @@ export const networkingPage = {
       cy.get('.pf-v6-c-popover__content > .pf-v6-c-button > svg').should('be.visible').click();
     },
   },
-  validateClusterNetworkHostPrefix: (hostPrefix = Cypress.env('NETWORK_HOST_PREFIX')) => {
-    cy.get(Cypress.env('clusterNetworks0HostPrefixFieldId')).should('have.value', hostPrefix);
+  validateClusterNetworkHostPrefix: (hostPrefix = Cypress.expose('NETWORK_HOST_PREFIX')) => {
+    cy.get(Cypress.expose('clusterNetworks0HostPrefixFieldId')).should('have.value', hostPrefix);
   },
-  validateClusterNetworkCidr: (networkCidr = Cypress.env('NETWORK_CIDR')) => {
-    cy.get(Cypress.env('clusterNetworkCidrFieldId')).should('have.value', networkCidr);
+  validateClusterNetworkCidr: (networkCidr = Cypress.expose('NETWORK_CIDR')) => {
+    cy.get(Cypress.expose('clusterNetworkCidrFieldId')).should('have.value', networkCidr);
   },
-  validateServiceNetworkCidr: (serviceCidr = Cypress.env('SERVICE_NETWORK_CIDR')) => {
-    cy.get(Cypress.env('serviceNetworks0CidrFieldId')).should('have.value', serviceCidr);
+  validateServiceNetworkCidr: (serviceCidr = Cypress.expose('SERVICE_NETWORK_CIDR')) => {
+    cy.get(Cypress.expose('serviceNetworks0CidrFieldId')).should('have.value', serviceCidr);
   },
   getApiVipFieldHelper: () => {
-    return cy.get(Cypress.env('apiVipFieldHelperId'));
+    return cy.get(Cypress.expose('apiVipFieldHelperId'));
   },
   getClusterNetworkCidrFieldHelper: () => {
-    return cy.get(Cypress.env('clusterNetworkCidrFieldHelperId'));
+    return cy.get(Cypress.expose('clusterNetworkCidrFieldHelperId'));
   },
   getClusterNetworkHostPrefixFieldHelper: () => {
-    return cy.get(Cypress.env('clusterNetworkHostPrefixFieldHelperId'));
+    return cy.get(Cypress.expose('clusterNetworkHostPrefixFieldHelperId'));
   },
   getServiceNetworkCidrFieldHelper: () => {
-    return cy.get(Cypress.env('serviceNetworkCidrFieldHelperId'));
+    return cy.get(Cypress.expose('serviceNetworkCidrFieldHelperId'));
   },
   getIngressVipFieldHelper: () => {
-    return cy.get(Cypress.env('ingressVipFieldHelperId'));
+    return cy.get(Cypress.expose('ingressVipFieldHelperId'));
   },
   enableUserManagedNetworking: () => {
-    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.env('userManagedNetworkingRadioText')})`)
+    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.expose('userManagedNetworkingRadioText')})`)
       .scrollIntoView()
       .click({ force: true });
   },
@@ -278,10 +278,10 @@ export const networkingPage = {
       });
   },
   getNetworkTypeToggle: () => {
-    return cy.get(Cypress.env('networkTypeToggleId')).scrollIntoView();
+    return cy.get(Cypress.expose('networkTypeToggleId')).scrollIntoView();
   },
   setOvnNetworking: () => {
-    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.env('openVirtualNetworkingRadioText')})`)
+    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.expose('openVirtualNetworkingRadioText')})`)
       .scrollIntoView()
       .click({ force: true });
   },

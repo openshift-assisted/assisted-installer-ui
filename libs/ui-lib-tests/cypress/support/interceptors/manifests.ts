@@ -17,7 +17,7 @@ export const mockCustomManifestFileResponse: HttpRequestInterceptor = (req) => {
 export const addCustomManifestsIntercepts = () => {
   cy.intercept('GET', `${allClustersApiPath}/*/manifests`, []).as('day2-flow-list-manifests');
 
-  const day1ManifestsPath = `${allClustersApiPath}${Cypress.env('clusterId')}/manifests`;
+  const day1ManifestsPath = `${allClustersApiPath}${Cypress.expose('clusterId')}/manifests`;
   cy.intercept('GET', day1ManifestsPath, mockCustomManifestResponse).as('list-manifests');
 
   cy.intercept('PATCH', day1ManifestsPath, mockCustomManifestResponse).as('update-manifests');
