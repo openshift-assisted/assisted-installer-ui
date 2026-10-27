@@ -17,6 +17,6 @@ Cypress.Commands.add(
     ),
 );
 
-Cypress.Commands.add('getClusterNameLinkSelector', (clusterName = Cypress.env('CLUSTER_NAME')) =>
+Cypress.Commands.add('getClusterNameLinkSelector', (clusterName = Cypress.expose('CLUSTER_NAME')) =>
   cy.get(`#cluster-link-${clusterName}`),
 );

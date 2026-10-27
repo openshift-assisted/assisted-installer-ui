@@ -1,40 +1,40 @@
 import * as path from 'path';
 
 // Hosts Status
-Cypress.env('hostStatusReady', 'Ready');
-Cypress.env('hostStatusDiscovering', 'Discovering');
-Cypress.env('hostStatusPendingInput', 'Pending input');
-Cypress.env('hostStatusInsufficient', 'Insufficient');
+Cypress.expose('hostStatusReady', 'Ready');
+Cypress.expose('hostStatusDiscovering', 'Discovering');
+Cypress.expose('hostStatusPendingInput', 'Pending input');
+Cypress.expose('hostStatusInsufficient', 'Insufficient');
 
 // Support Levels
-Cypress.env('techPreviewSupportLevel', 'Technology Preview');
-Cypress.env('devPreviewSupportLevel', 'Developer Preview');
-Cypress.env('vmsSupportLimitationText', 'Your cluster will be subject to support limitations');
+Cypress.expose('techPreviewSupportLevel', 'Technology Preview');
+Cypress.expose('devPreviewSupportLevel', 'Developer Preview');
+Cypress.expose('vmsSupportLimitationText', 'Your cluster will be subject to support limitations');
 
 // CVO Events Table
-Cypress.env('cluterEventsButtonId', '#cluster-events-button');
-Cypress.env('searchTextId', '#search-text');
-Cypress.env('clusterEventsToolbarId', '#clusters-events-toolbar');
-Cypress.env('eventsTableAriaLabel', 'table[aria-label="Events table"]');
+Cypress.expose('cluterEventsButtonId', '#cluster-events-button');
+Cypress.expose('searchTextId', '#search-text');
+Cypress.expose('clusterEventsToolbarId', '#clusters-events-toolbar');
+Cypress.expose('eventsTableAriaLabel', 'table[aria-label="Events table"]');
 
-Cypress.env(
+Cypress.expose(
   'kubeconfigNoingressFile',
   path.join(Cypress.config('downloadsFolder'), 'kubeconfig-noingress'),
 );
-Cypress.env('kubeconfigFile', path.join(String(Cypress.config('downloadsFolder')), 'kubeconfig'));
-Cypress.env(
+Cypress.expose('kubeconfigFile', path.join(String(Cypress.config('downloadsFolder')), 'kubeconfig'));
+Cypress.expose(
   'kubeadminPasswordFilePath',
   path.join(Cypress.config('downloadsFolder'), 'kubeadmin-password'),
 );
-Cypress.env(
+Cypress.expose(
   'installConfigFilePath',
   path.join(Cypress.config('downloadsFolder'), 'install-config.yaml'),
 );
-Cypress.env(
+Cypress.expose(
   'resultFile',
   path.join(Cypress.config('downloadsFolder'), 'cypress-deployment-result'),
 );
-Cypress.env(
+Cypress.expose(
   'validationsResultFile',
   path.join(Cypress.config('downloadsFolder'), 'validations-deployment-result'),
 );

@@ -10,7 +10,7 @@ const oveBoundHosts = [0, 1, 2].map((index) => ({
 const oveUnboundHosts = oveBoundHosts.map((host) => ({ ...host, cluster_id: undefined }));
 
 const oveRenamedHosts = oveBoundHosts.map((host, index) =>
-  hostRename(host, `${Cypress.env('HOST_RENAME')}-${index + 1}`),
+  hostRename(host, `${Cypress.expose('HOST_RENAME')}-${index + 1}`),
 );
 
 const oveReadyHosts = oveRenamedHosts.map(hostReady);
