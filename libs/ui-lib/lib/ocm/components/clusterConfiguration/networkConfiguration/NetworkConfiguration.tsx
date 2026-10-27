@@ -318,12 +318,15 @@ const NetworkConfiguration = ({
           />
         </StackItem>
       )}
-      <StackItem>
-        <NetworkTypeDropDown
-          isDisabled={isViewerMode}
-          featureSupportLevelData={featureSupportLevelData}
-        />
-      </StackItem>
+
+      {!isSingleClusterFeature && (
+        <StackItem>
+          <NetworkTypeDropDown
+            isDisabled={isViewerMode}
+            featureSupportLevelData={featureSupportLevelData}
+          />
+        </StackItem>
+      )}
 
       {!(isUserManagedNetworking && !isSNOCluster) && (
         <StackItem>
