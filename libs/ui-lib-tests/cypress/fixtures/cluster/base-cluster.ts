@@ -98,6 +98,7 @@ const supported_operators = [
   'cluster-observability',
   'loki',
   'openshift-logging',
+  'nmstate',
 ];
 
 export { fakeClusterId, fakeClusterInfraEnvId, baseCluster, bundles, supported_operators };
