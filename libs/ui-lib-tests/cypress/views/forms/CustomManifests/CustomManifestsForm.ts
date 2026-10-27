@@ -13,7 +13,10 @@ export const CustomManifestsForm = {
   },
 
   validationAlert: () => {
-    return cy.contains('.pf-v6-c-alert', 'Custom manifests configuration contains missing or invalid fields');
+    return cy.contains(
+      '.pf-v6-c-alert',
+      'Custom manifests configuration contains missing or invalid fields',
+    );
   },
   addManifest: () => {
     return CustomManifestsForm.body().findByTestId('add-manifest');
@@ -41,5 +44,15 @@ export const CustomManifestsForm = {
 
   collapseManifest: (index: number) => {
     CustomManifestsForm.body().findByTestId(`toggle-manifest-${index}`).click();
+  },
+
+  enableCustomManifests: () => {
+    cy.findByTestId('form-switch-use-custom-manifests-field').should('not.be.checked');
+    cy.get('#form-switch-use-custom-manifests-field-label').click();
+  },
+
+  disableCustomManifests: () => {
+    cy.findByTestId('form-switch-use-custom-manifests-field').should('be.checked');
+    cy.get('#form-switch-use-custom-manifests-field-label').click();
   },
 };
