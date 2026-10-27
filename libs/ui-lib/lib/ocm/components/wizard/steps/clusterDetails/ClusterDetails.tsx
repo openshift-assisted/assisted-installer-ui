@@ -11,7 +11,6 @@ import {
   ClusterWizardStep,
   LoadingState,
   ErrorState,
-  InfraEnvsAPI,
 } from '../../../../../common';
 import {
   useManagedDomains,
@@ -68,15 +67,6 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           params,
         );
 
-        if (isSingleClusterFeatureEnabled) {
-          const proxyValues = {
-            httpProxy: params.httpProxy,
-            httpsProxy: params.httpsProxy,
-            noProxy: params.noProxy,
-          };
-          await InfraEnvsAPI.update(infraEnv?.id || '', { proxy: proxyValues });
-        }
-
         dispatch(updateCluster(updatedCluster));
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
@@ -88,15 +78,7 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [
-      clearAlerts,
-      cluster?.tags,
-      isSingleClusterFeatureEnabled,
-      dispatch,
-      clusterWizardContext,
-      infraEnv?.id,
-      addAlert,
-    ],
+    [clearAlerts, cluster?.tags, dispatch, clusterWizardContext, addAlert],
   );
 
   const handleClusterCreate = React.useCallback(
@@ -115,15 +97,6 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           isAssistedMigration,
           isSingleClusterFeatureEnabled,
         );
-
-        if (isSingleClusterFeatureEnabled) {
-          const proxyValues = {
-            httpProxy: params.httpProxy,
-            httpsProxy: params.httpsProxy,
-            noProxy: params.noProxy,
-          };
-          await InfraEnvsAPI.update(infraEnv?.id || '', { proxy: proxyValues });
-        }
 
         void navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
@@ -158,7 +131,6 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
       location.search,
       isSingleClusterFeatureEnabled,
       navigate,
-      infraEnv?.id,
       clusterWizardContext,
       addAlert,
       dispatch,
