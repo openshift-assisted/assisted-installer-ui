@@ -16,7 +16,7 @@ export const mockClusterResponse: HttpRequestInterceptor = (req) => {
     req.reply(transformClusterFixture(fixtureMapping));
   } else {
     throw new Error(
-      'Incorrect fixture mapping for scenario ' + ((Cypress.env('AI_SCENARIO') as string) || ''),
+      'Incorrect fixture mapping for scenario ' + ((Cypress.expose('AI_SCENARIO') as string) || ''),
     );
   }
 };
@@ -52,7 +52,7 @@ export const addClusterListIntercepts = () => {
   cy.intercept('GET', allClustersApiPath, (req) => {
     const { initialClusterList, updatedClusterList } = fixtures;
 
-    let fixture = Cypress.env('AI_SINGLE_CLUSTER') ? [] : initialClusterList;
+    let fixture = Cypress.expose('AI_SINGLE_CLUSTER') ? [] : initialClusterList;
     if (hasWizardSignal('CLUSTER_CREATED')) {
       fixture = updatedClusterList();
     }
@@ -81,12 +81,12 @@ export const addClusterPatchAndDetailsIntercepts = () => {
   cy.intercept('GET', clusterApiPath, mockClusterResponse).as('cluster-details');
 
   cy.intercept('PATCH', clusterApiPath, (req) => {
-    if (Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH') === true) {
+    if (Cypress.expose('AI_FORBIDDEN_CLUSTER_PATCH') === true) {
       throw new Error(`Forbidden patch: ${req.url} \n${JSON.stringify(req.body)}`);
     }
 
     req.alias = 'update-cluster';
-    if (Cypress.env('AI_ERROR_CLUSTER_PATCH') === true) {
+    if (Cypress.expose('AI_ERROR_CLUSTER_PATCH') === true) {
       mockClusterErrorResponse(req);
     } else {
       mockClusterResponse(req);

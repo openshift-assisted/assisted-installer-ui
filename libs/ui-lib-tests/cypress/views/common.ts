@@ -104,7 +104,7 @@ export const commonActions = {
     cy.visit('/assisted-installer/clusters/~new');
   },
   visitClusterDetailsPage: () => {
-    cy.visit(`/assisted-installer/clusters/${Cypress.env('clusterId')}`);
+    cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
     cy.get('h2').should('exist');
   },
 };

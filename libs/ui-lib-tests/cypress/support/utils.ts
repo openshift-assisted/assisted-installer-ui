@@ -42,12 +42,12 @@ const signalOrder = [
 export type SignalName = (typeof signalOrder)[number];
 
 export const setLastWizardSignal = (signalName: SignalName) => {
-  Cypress.env('AI_LAST_SIGNAL', signalName);
+  Cypress.expose('AI_LAST_SIGNAL', signalName);
 };
 
 export const hasWizardSignal = (signalName: SignalName) => {
   const currentSignalOrder = signalOrder.findIndex(
-    (signal) => signal === Cypress.env('AI_LAST_SIGNAL'),
+    (signal) => signal === Cypress.expose('AI_LAST_SIGNAL'),
   );
 
   const reqSignalOrder = signalOrder.findIndex((signal) => signal === signalName);

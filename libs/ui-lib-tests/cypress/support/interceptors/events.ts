@@ -3,7 +3,7 @@ import * as fixtures from '../../fixtures';
 export const addEventsIntercepts = () => {
   cy.intercept('GET', '/api/assisted-install/v2/events*', (req) => {
     expect(req.query['order']).eq('descending');
-    expect(req.query['cluster_id']).eq(Cypress.env('clusterId'));
+    expect(req.query['cluster_id']).eq(Cypress.expose('clusterId'));
 
     const events = fixtures.getEvents({
       limit: req.query['limit'],

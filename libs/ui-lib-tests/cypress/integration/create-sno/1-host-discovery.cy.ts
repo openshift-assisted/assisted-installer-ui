@@ -55,10 +55,10 @@ describe(`Assisted Installer SNO Host discovery`, () => {
     it('Should rename the host, get valid state and see the "next" button enabled', () => {
       bareMetalDiscoveryPage.selectHostRowKebabAction(
         0,
-        Cypress.env('hostRowKebabMenuChangeHostnameText'),
+        Cypress.expose('hostRowKebabMenuChangeHostnameText'),
       );
 
-      const renamedHost = Cypress.env('HOST_RENAME');
+      const renamedHost = Cypress.expose('HOST_RENAME');
       bareMetalDiscoveryPage.renameHost(renamedHost);
       bareMetalDiscoveryPage.clickSaveEditHostsForm();
 

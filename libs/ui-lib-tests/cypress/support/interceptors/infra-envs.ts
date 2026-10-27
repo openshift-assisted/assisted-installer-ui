@@ -36,7 +36,7 @@ export const addDay1InfraEnvIntercepts = () => {
 
   cy.intercept('PATCH', infraEnvApiPath, mockInfraEnvResponse).as('update-infra-env');
 
-  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.env('clusterId')}`, [
+  cy.intercept('GET', `${allInfraEnvsApiPath}?cluster_id=${Cypress.expose('clusterId')}`, [
     fixtures.baseInfraEnv,
   ]).as('filter-infra-envs');
 

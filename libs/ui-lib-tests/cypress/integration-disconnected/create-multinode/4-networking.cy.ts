@@ -67,6 +67,7 @@ describe(`Assisted Installer Multinode Networking`, () => {
       cy.wait('@update-cluster').then((req) => {
         expect(req.request.body['ssh_public_key']).to.equal(fixtures.sshKey);
       });
+    });
 
     it('Should have an enabled Next button', () => {
       commonActions.getNextButton().should('be.enabled');
