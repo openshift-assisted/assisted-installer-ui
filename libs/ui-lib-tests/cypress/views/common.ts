@@ -29,7 +29,8 @@ type Day1Steps =
   | 'Networking'
   | 'Review and create'
   | 'Operators'
-  | 'Custom manifests';
+  | 'Custom manifests'
+  | 'Download credentials';
 
 type Day1StaticIpSteps =
   | 'Cluster details'
