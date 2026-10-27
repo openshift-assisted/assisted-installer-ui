@@ -1,1 +1,1 @@
-Cypress.env('yamlStartFromScratchText', 'Start from scratch');
+Cypress.expose('yamlStartFromScratchText', 'Start from scratch');

@@ -17,7 +17,7 @@ export const addDay1HostIntercepts = () => {
   });
 
   cy.intercept('GET', `${infraEnvApiPath}/hosts`, (req) => {
-    if (Cypress.env('AI_SCENARIO') === 'AI_OVE_CREATE_MULTINODE') {
+    if (Cypress.expose('AI_SCENARIO') === 'AI_OVE_CREATE_MULTINODE') {
       req.reply(
         hasWizardSignal('HOST_DISCOVERED_3') ? fixtures.oveBoundHosts : fixtures.oveUnboundHosts,
       );

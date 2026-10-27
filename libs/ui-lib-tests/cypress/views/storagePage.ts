@@ -1,7 +1,7 @@
 export const storagePage = {
   validateODFUsage: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
+    numMasters: number = Cypress.expose('NUM_MASTERS'),
+    numWorkers: number = Cypress.expose('NUM_WORKERS'),
   ) => {
     cy.get('td[data-testid="use-odf"]')
       .should('have.length', numMasters + numWorkers)
@@ -15,8 +15,8 @@ export const storagePage = {
       });
   },
   validateNumberOfDisks: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
+    numMasters: number = Cypress.expose('NUM_MASTERS'),
+    numWorkers: number = Cypress.expose('NUM_WORKERS'),
   ) => {
     cy.get('td[data-testid="disk-number"]')
       .should('have.length', numMasters + numWorkers)

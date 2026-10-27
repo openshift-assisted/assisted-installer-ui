@@ -1,25 +1,25 @@
 export const bareMetalDiscoveryPage = {
   getAddHostsButton: () => {
-    return cy.get(Cypress.env('hostInventoryDownloadDiscoveryIso'));
+    return cy.get(Cypress.expose('hostInventoryDownloadDiscoveryIso'));
   },
   openAddHostsModal: () => {
     // This button is detached sometimes. We add extra guards to always be able to click it
-    cy.get(Cypress.env('hostInventoryDownloadDiscoveryIso')).scrollIntoView().click();
+    cy.get(Cypress.expose('hostInventoryDownloadDiscoveryIso')).scrollIntoView().click();
   },
   getGenerateDay2IsoButton: () => {
-    return cy.get(Cypress.env('bareMetalInventoryAddHostsButtonDownloadDiscoveryIso'));
+    return cy.get(Cypress.expose('bareMetalInventoryAddHostsButtonDownloadDiscoveryIso'));
   },
   setClusterIdFromUrl: () => {
     cy.url().then((url) => {
       const clusterId = url.split('/')[url.split('/').length - 1];
-      Cypress.env('clusterId', clusterId);
+      Cypress.expose('clusterId', clusterId);
     });
   },
   getCnvField: () => {
-    return cy.get(Cypress.env('useContainerNativeVirtualizationField'));
+    return cy.get(Cypress.expose('useContainerNativeVirtualizationField'));
   },
   getOdfOperator: () => {
-    return cy.get(Cypress.env('useOpenShiftDataFoundation'));
+    return cy.get(Cypress.expose('useOpenShiftDataFoundation'));
   },
   platformIntegration: {
     getFullPotentialHint: () => {
@@ -30,9 +30,9 @@ export const bareMetalDiscoveryPage = {
     },
   },
   waitForHostTablePopulation: (
-    numMasters: number = Cypress.env('NUM_MASTERS'),
-    numWorkers: number = Cypress.env('NUM_WORKERS'),
-    timeout = Cypress.env('HOST_REGISTRATION_TIMEOUT'),
+    numMasters: number = Cypress.expose('NUM_MASTERS'),
+    numWorkers: number = Cypress.expose('NUM_WORKERS'),
+    timeout = Cypress.expose('HOST_REGISTRATION_TIMEOUT'),
   ) => {
     cy.get('table.hosts-table > tbody > tr:not([hidden])', { timeout: timeout }).should(($els) => {
       expect($els.length).to.be.eq(numMasters + numWorkers);
@@ -41,7 +41,7 @@ export const bareMetalDiscoveryPage = {
       }
     });
   },
-  waitForHostRowToContain: (text, timeout = Cypress.env('HOST_DISCOVERY_TIMEOUT')) => {
+  waitForHostRowToContain: (text, timeout = Cypress.expose('HOST_DISCOVERY_TIMEOUT')) => {
     cy.get('table.hosts-table > tbody > tr', { timeout: timeout }).should('contain.text', text);
   },
   selectHostRowKebabAction: (rowIndex, actionItem) => {
@@ -75,26 +75,26 @@ export const bareMetalDiscoveryPage = {
     cy.get('.table-toolbar .pf-v6-c-menu-toggle__controls:last').click();
     cy.get('.pf-v6-c-menu__content:last').within(() => {
       cy.get('.pf-v6-c-menu__item-text')
-        .contains(Cypress.env('hostRowKebabMenuChangeHostnameText'))
+        .contains(Cypress.expose('hostRowKebabMenuChangeHostnameText'))
         .click();
     });
     bareMetalDiscoveryPage.renameHost(`${prefix}-{{n}}`);
     bareMetalDiscoveryPage.clickSaveEditHostsForm();
   },
   getHostNameInput: () => {
-    return cy.get(Cypress.env('hostnameFieldId'));
+    return cy.get(Cypress.expose('hostnameFieldId'));
   },
   renameHost: (newHostName) => {
     bareMetalDiscoveryPage
       .getHostNameInput()
       .clear()
-      .type(newHostName, { parseSpecialCharSequences: false });
+      .type(newHostName, { parseSpecialCharSequences: false }).blur();
     bareMetalDiscoveryPage.getHostNameInput().should('have.value', newHostName);
   },
   deleteHost: () => {
     cy.get('.pf-v6-c-modal-box__footer').should('be.visible');
     cy.get('.pf-v6-c-modal-box__footer').within(() => {
-      cy.get(Cypress.env('deleteHostSubmit')).click();
+      cy.get(Cypress.expose('deleteHostSubmit')).click();
     });
   },
   validateHostRowColumnValue: (hostRowIndex, columnDataTestId, value) => {
@@ -104,18 +104,18 @@ export const bareMetalDiscoveryPage = {
   },
   sortCpuAscending: () => {
     // first click will sort in Ascending order (lowest to highest)
-    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
+    cy.get(`${Cypress.expose('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
     cy.get(
-      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
+      `${Cypress.expose('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
     )
       .invoke('attr', 'd')
       .should('contain.text', 'M88');
   },
   sortCpuDescending: () => {
     // second click will sort in Descending order (highest to lowest)
-    cy.get(`${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
+    cy.get(`${Cypress.expose('colHeaderCpuCoresId')} > .pf-v6-c-table__button`).click();
     cy.get(
-      `${Cypress.env('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
+      `${Cypress.expose('colHeaderCpuCoresId')} > .pf-v6-c-table__button > div > span > svg > path`,
     )
       .invoke('attr', 'd')
       .should('contain.text', 'M168');
