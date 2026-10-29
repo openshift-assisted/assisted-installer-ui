@@ -1,26 +1,26 @@
 /*
 VARIABLES
  */
-Cypress.env('clusterNameFieldValidator', `[aria-label='Validation']`);
-Cypress.env('clusterNameFieldId', '#form-input-name-field');
-Cypress.env('openshiftVersionFieldId', '#form-input-openshiftVersion-field');
-Cypress.env('imageTypeFieldId', '#form-input-imageType-field');
-Cypress.env('pullSecretFieldId', '#form-input-pullSecret-field');
-Cypress.env('assistedInstallerSupportLevel', `[data-testid=assisted-installer-support-level]`);
-Cypress.env('snoSupportLevel', `[data-testid=SNO-support-level]`);
-Cypress.env('baseDnsDomainFieldId', '#form-input-baseDnsDomain-field');
-Cypress.env('highAvailabilityModeFieldId', '#form-input-highAvailabilityMode-field');
-Cypress.env('cpuArchitectureFieldId', '#form-input-cpuArchitecture-field');
-Cypress.env('useRedHatDnsServiceFieldId', '#form-checkbox-useRedHatDnsService-field');
-Cypress.env('enableStaticIpRadioButtonText', 'Static network configuration');
-Cypress.env('cpuArchitectureFieldHelperId', '#form-input-cpuArchitecture-field-helper');
-Cypress.env('pullSecretFieldHelperId', '#form-input-pullSecret-field-helper');
-Cypress.env('clusterNameFieldHelperId', '#form-input-name-field-helper');
-Cypress.env('baseDnsDomainFieldHelperId', '#form-input-baseDnsDomain-field-helper');
-Cypress.env(
+Cypress.expose('clusterNameFieldValidator', `[aria-label='Validation']`);
+Cypress.expose('clusterNameFieldId', '#form-input-name-field');
+Cypress.expose('openshiftVersionFieldId', '#form-input-openshiftVersion-field');
+Cypress.expose('imageTypeFieldId', '#form-input-imageType-field');
+Cypress.expose('pullSecretFieldId', '#form-input-pullSecret-field');
+Cypress.expose('assistedInstallerSupportLevel', `[data-testid=assisted-installer-support-level]`);
+Cypress.expose('snoSupportLevel', `[data-testid=SNO-support-level]`);
+Cypress.expose('baseDnsDomainFieldId', '#form-input-baseDnsDomain-field');
+Cypress.expose('highAvailabilityModeFieldId', '#form-input-highAvailabilityMode-field');
+Cypress.expose('cpuArchitectureFieldId', '#form-input-cpuArchitecture-field');
+Cypress.expose('useRedHatDnsServiceFieldId', '#form-checkbox-useRedHatDnsService-field');
+Cypress.expose('enableStaticIpRadioButtonText', 'Static network configuration');
+Cypress.expose('cpuArchitectureFieldHelperId', '#form-input-cpuArchitecture-field-helper');
+Cypress.expose('pullSecretFieldHelperId', '#form-input-pullSecret-field-helper');
+Cypress.expose('clusterNameFieldHelperId', '#form-input-name-field-helper');
+Cypress.expose('baseDnsDomainFieldHelperId', '#form-input-baseDnsDomain-field-helper');
+Cypress.expose(
   'staticIpNetworkConfigFieldId',
   '#form-radio-hostsNetworkConfigurationType-static-field',
 );
-Cypress.env('baseDnsDomainFieldHelperErrorId', '#form-input-baseDnsDomain-field-helper-error');
-Cypress.env('pullSecretFieldHelperErrorId', '#form-input-pullSecret-field-helper-error');
-Cypress.env('controlPlaneNodesFieldId', '#form-input-controlPlaneCount-field');
+Cypress.expose('baseDnsDomainFieldHelperErrorId', '#form-input-baseDnsDomain-field-helper-error');
+Cypress.expose('pullSecretFieldHelperErrorId', '#form-input-pullSecret-field-helper-error');
+Cypress.expose('controlPlaneNodesFieldId', '#form-input-controlPlaneCount-field');

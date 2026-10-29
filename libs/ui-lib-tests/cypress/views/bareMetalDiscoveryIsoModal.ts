@@ -22,12 +22,12 @@ export const bareMetalDiscoveryIsoModal = {
     });
   },
   getMinimalIsoOption: () => {
-    return cy.get(Cypress.env('formRadioImageTypeMinIsoFieldId'));
+    return cy.get(Cypress.expose('formRadioImageTypeMinIsoFieldId'));
   },
   getSshPublicKey: () => {
-    return cy.get(Cypress.env('sshPublicKeyFieldId'));
+    return cy.get(Cypress.expose('sshPublicKeyFieldId'));
   },
-  inputSshPublicKey: (sshKey = Cypress.env('SSH_PUB_KEY')) => {
+  inputSshPublicKey: (sshKey = Cypress.expose('SSH_PUB_KEY')) => {
     bareMetalDiscoveryIsoModal.getSshPublicKey().should('be.visible');
     if (sshKey) {
       bareMetalDiscoveryIsoModal.getSshPublicKey().fill(sshKey);
@@ -38,7 +38,7 @@ export const bareMetalDiscoveryIsoModal = {
     }
   },
   getInputSshKeyFieldHelper: () => {
-    return cy.get(Cypress.env('sshPulicKeyFieldHelperId'));
+    return cy.get(Cypress.expose('sshPulicKeyFieldHelperId'));
   },
   getEnableProxy: () => {
     return cy.get('#form-checkbox-enableProxy-field');
@@ -70,7 +70,7 @@ export const bareMetalDiscoveryIsoModal = {
   validateNeverShareWarning: () => {
     cy.get('.pf-v6-c-modal-box__body > .pf-v6-c-alert').should(
       'contain',
-      Cypress.env('neverShareWarningText'),
+      Cypress.expose('neverShareWarningText'),
     );
   },
   getGenerateDiscoveryIso: () => {
@@ -89,13 +89,13 @@ export const bareMetalDiscoveryIsoModal = {
     return cy.get('[data-testid="edit-iso-btn"]');
   },
   getImageTypeField: () => {
-    return cy.get(Cypress.env('imageTypeFieldId'));
+    return cy.get(Cypress.expose('imageTypeFieldId'));
   },
   openImageTypeDropdown: () => {
     bareMetalDiscoveryIsoModal.getImageTypeField().click();
   },
   getImageTypeDropdown: () => {
-    return cy.get(`${Cypress.env('imageTypeFieldId')}-dropdown`);
+    return cy.get(`${Cypress.expose('imageTypeFieldId')}-dropdown`);
   },
   getSelectedImageType: () => {
     return bareMetalDiscoveryIsoModal.getImageTypeField().find('.pf-v6-c-menu-toggle__text');
@@ -119,8 +119,8 @@ export const bareMetalDiscoveryIsoModal = {
     });
   },
   setProxyValues: (
-    httpProxy = Cypress.env('HTTP_PROXY'),
-    httpsProxy = Cypress.env('HTTP_PROXY'),
+    httpProxy = Cypress.expose('HTTP_PROXY'),
+    httpsProxy = Cypress.expose('HTTP_PROXY'),
     noProxy = null,
   ) => {
     bareMetalDiscoveryIsoModal.getEnableProxy().check();
@@ -140,8 +140,8 @@ export const bareMetalDiscoveryIsoModal = {
       bareMetalDiscoveryIsoModal.getNoProxyInput().should('have.value', noProxy);
     }
   },
-  waitForIsoGeneration: (timeout = Cypress.env('GENERATE_ISO_TIMEOUT')) => {
-    cy.get('h4', { timeout }).should('contain.text', Cypress.env('isoReadyToDownloadText'));
+  waitForIsoGeneration: (timeout = Cypress.expose('GENERATE_ISO_TIMEOUT')) => {
+    cy.get('h4', { timeout }).should('contain.text', Cypress.expose('isoReadyToDownloadText'));
   },
   verifyDownloadIsoLinks: () => {
     return cy

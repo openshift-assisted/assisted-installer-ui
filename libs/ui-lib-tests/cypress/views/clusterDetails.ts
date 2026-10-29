@@ -2,24 +2,24 @@ import { pullSecret } from '../fixtures';
 
 export const clusterDetailsPage = {
   getClusterNameField: () => {
-    return cy.get(Cypress.env('clusterNameFieldId'));
+    return cy.get(Cypress.expose('clusterNameFieldId'));
   },
-  inputClusterName: (clusterName = Cypress.env('CLUSTER_NAME')) => {
+  inputClusterName: (clusterName = Cypress.expose('CLUSTER_NAME')) => {
     clusterDetailsPage.getClusterNameField().should('be.visible').clear().type(clusterName);
   },
   getOpenshiftVersionField: () => {
-    return cy.get(Cypress.env('openshiftVersionFieldId'));
+    return cy.get(Cypress.expose('openshiftVersionFieldId'));
   },
   openOpenshiftVersionDropdown: () => {
     clusterDetailsPage.getOpenshiftVersionField().click();
   },
   getOpenshiftVersionDropdown: () => {
-    return cy.get(`${Cypress.env('openshiftVersionFieldId')}-dropdown`);
+    return cy.get(`${Cypress.expose('openshiftVersionFieldId')}-dropdown`);
   },
   getSelectedOpenShiftVersion: () => {
     return clusterDetailsPage.getOpenshiftVersionField().find('.pf-v6-c-menu-toggle__text');
   },
-  inputOpenshiftVersion: (version = Cypress.env('OPENSHIFT_VERSION')) => {
+  inputOpenshiftVersion: (version = Cypress.expose('OPENSHIFT_VERSION')) => {
     clusterDetailsPage.openOpenshiftVersionDropdown();
     clusterDetailsPage.getOpenshiftVersionDropdown().within(() => {
       cy.get('li').contains(version).click();
@@ -31,44 +31,47 @@ export const clusterDetailsPage = {
       cy.get('li').contains('Show all available versions').click();
     });
   },
+  getPullSecretCheckbox: () => {
+    return cy.get('#checkbox-pull-secret');
+  },
   getPullSecret: () => {
-    return cy.get(Cypress.env('pullSecretFieldId'));
+    return cy.get(Cypress.expose('pullSecretFieldId'));
   },
   getPullSecretFieldHelper: () => {
-    return cy.get(Cypress.env('pullSecretFieldHelperId'));
+    return cy.get(Cypress.expose('pullSecretFieldHelperId'));
   },
   inputPullSecret: (pullSecretValue = pullSecret) => {
     clusterDetailsPage.getPullSecret().clear();
-    cy.pasteText(Cypress.env('pullSecretFieldId'), pullSecretValue);
+    cy.pasteText(Cypress.expose('pullSecretFieldId'), pullSecretValue);
     clusterDetailsPage.getPullSecret().should('contain.text', pullSecretValue);
   },
   checkAiTechSupportLevel: () => {
-    cy.get(Cypress.env('assistedInstallerSupportLevel'))
+    cy.get(Cypress.expose('assistedInstallerSupportLevel'))
       .should('be.visible')
-      .should('contain.text', Cypress.env('techPreviewSupportLevel'));
+      .should('contain.text', Cypress.expose('techPreviewSupportLevel'));
   },
   checkSnoDevSupportLevel: () => {
-    cy.get(Cypress.env('snoSupportLevel'))
+    cy.get(Cypress.expose('snoSupportLevel'))
       .should('be.visible')
-      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
+      .should('contain.text', Cypress.expose('devPreviewSupportLevel'));
   },
   getBaseDnsDomain: () => {
-    return cy.get(Cypress.env('baseDnsDomainFieldId'));
+    return cy.get(Cypress.expose('baseDnsDomainFieldId'));
   },
-  inputBaseDnsDomain: (dns = Cypress.env('DNS_DOMAIN_NAME')) => {
+  inputBaseDnsDomain: (dns = Cypress.expose('DNS_DOMAIN_NAME')) => {
     clusterDetailsPage.getBaseDnsDomain().clear().type(dns).should('have.value', dns);
   },
   getStaticIpNetworkConfig: () => {
-    return cy.get(Cypress.env('staticIpNetworkConfigFieldId'));
+    return cy.get(Cypress.expose('staticIpNetworkConfigFieldId'));
   },
   getCpuArchitectureField: () => {
-    return cy.get(Cypress.env('cpuArchitectureFieldId'));
+    return cy.get(Cypress.expose('cpuArchitectureFieldId'));
   },
   openCpuArchitectureDropdown: () => {
     clusterDetailsPage.getCpuArchitectureField().click();
   },
   getCpuArchitectureDropdown: () => {
-    return cy.get(`${Cypress.env('cpuArchitectureFieldId')}-dropdown`);
+    return cy.get(`${Cypress.expose('cpuArchitectureFieldId')}-dropdown`);
   },
   getSelectedCpuArchitecture: () => {
     return clusterDetailsPage.getCpuArchitectureField().find('.pf-v6-c-menu-toggle__text');
@@ -94,18 +97,18 @@ export const clusterDetailsPage = {
     });
   },
   getRedHatDnsServiceCheck: () => {
-    return cy.get(Cypress.env('useRedHatDnsServiceFieldId'));
+    return cy.get(Cypress.expose('useRedHatDnsServiceFieldId'));
   },
   setRedHatDnsService: () => {
     // set first option val to dnsDomain
     cy.get(`#form-input-baseDnsDomain-field > option`)
       .eq(0)
       .then((option) => {
-        Cypress.env('route53Dns', option.val());
+        Cypress.expose('route53Dns', option.val());
       });
   },
   enableStaticNetworking: () => {
-    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.env('enableStaticIpRadioButtonText')})`)
+    cy.get(`.pf-v6-c-radio__label:contains(${Cypress.expose('enableStaticIpRadioButtonText')})`)
       .scrollIntoView()
       .click({ force: true });
   },
@@ -115,7 +118,7 @@ export const clusterDetailsPage = {
       .should('contain.text', status === 'fail' ? '#c9190b' : '#3e8635');
   },
   getClusterNameFieldValidator: () => {
-    return cy.get(Cypress.env('clusterNameFieldValidator'));
+    return cy.get(Cypress.expose('clusterNameFieldValidator'));
   },
   validateInputNameFieldHelperError: (...childNums: number[]) => {
     clusterDetailsPage.getClusterNameFieldValidator().click();
@@ -127,7 +130,7 @@ export const clusterDetailsPage = {
     }
   },
   getInputDnsDomainFieldHelper: () => {
-    return cy.get(Cypress.env('baseDnsDomainFieldHelperId'));
+    return cy.get(Cypress.expose('baseDnsDomainFieldHelperId'));
   },
   getClusterDetailsBody: () => {
     return cy.get('.pf-l-grid');
@@ -142,22 +145,22 @@ export const clusterDetailsPage = {
     cy.get('#wizard-cluster-details__form').click();
   },
   validateInputDnsDomainFieldHelper: (msg) => {
-    cy.get(Cypress.env('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
+    cy.get(Cypress.expose('baseDnsDomainFieldHelperErrorId')).should('contain', msg);
   },
   clearPullSecret: () => {
-    cy.get(Cypress.env('pullSecretFieldId')).clear().blur();
+    cy.get(Cypress.expose('pullSecretFieldId')).clear().blur();
   },
   validateInputPullSecretFieldHelper: (msg) => {
-    cy.get(Cypress.env('pullSecretFieldHelperErrorId')).should('contain', msg);
+    cy.get(Cypress.expose('pullSecretFieldHelperErrorId')).should('contain', msg);
   },
   getControlPlaneNodesField: () => {
-    return cy.get(Cypress.env('controlPlaneNodesFieldId'));
+    return cy.get(Cypress.expose('controlPlaneNodesFieldId'));
   },
   openControlPlaneNodesDropdown: () => {
     clusterDetailsPage.getControlPlaneNodesField().click();
   },
   getControlPlaneNodeDropdown: () => {
-    return cy.get(`${Cypress.env('controlPlaneNodesFieldId')}-dropdown`);
+    return cy.get(`${Cypress.expose('controlPlaneNodesFieldId')}-dropdown`);
   },
   getSelectedControlPlaneNode: () => {
     return clusterDetailsPage.getControlPlaneNodesField().find('.pf-v6-c-menu-toggle__text');

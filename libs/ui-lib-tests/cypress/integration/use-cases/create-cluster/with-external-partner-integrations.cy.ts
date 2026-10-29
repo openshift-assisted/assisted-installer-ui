@@ -34,7 +34,7 @@ describe('Create a new cluster with external partner integrations', () => {
     });
 
     it('Can select one external platform integration option and cluster is created well', () => {
-      ClusterDetailsForm.clusterNameField.findInputField().type(Cypress.env('CLUSTER_NAME'));
+      ClusterDetailsForm.clusterNameField.findInputField().type(Cypress.expose('CLUSTER_NAME'));
       ClusterDetailsForm.baseDomainField.findInputField().type('redhat.com');
       ClusterDetailsForm.pullSecretField.inputPullSecret(pullSecret);
       ClusterDetailsForm.openshiftVersionField.selectVersion('4.14');

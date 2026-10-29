@@ -27,7 +27,7 @@ const getDiscoveredHostsCount = () => {
 };
 
 const getRenamedHost = (hostIndex: number) => {
-  return hostRename(discoveredHosts[hostIndex], `${Cypress.env('HOST_RENAME')}-${hostIndex + 1}`);
+  return hostRename(discoveredHosts[hostIndex], `${Cypress.expose('HOST_RENAME')}-${hostIndex + 1}`);
 };
 
 const getUpdatedHosts = () => {
@@ -36,7 +36,7 @@ const getUpdatedHosts = () => {
     return [];
   }
 
-  const lastSignal: string = Cypress.env('AI_LAST_SIGNAL');
+  const lastSignal: string = Cypress.expose('AI_LAST_SIGNAL');
 
   let transformer: (index: number) => Record<string, unknown>;
   if (/HOST_DISCOVERED_\d/.test(lastSignal)) {

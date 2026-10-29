@@ -1,37 +1,37 @@
 export const clusterListPage = {
-  getClusterByName: (clusterName = Cypress.env('CLUSTER_NAME')) => {
-    return cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`).scrollIntoView();
+  getClusterByName: (clusterName = Cypress.expose('CLUSTER_NAME')) => {
+    return cy.get(`${Cypress.expose('clusterRowIdPrefix')}${clusterName}`).scrollIntoView();
   },
   getClustersTable: () => {
-    cy.get(Cypress.env('clustersTableAriaLabel'));
+    cy.get(Cypress.expose('clustersTableAriaLabel'));
   },
   getEmptyStateNewClusterButton: () => {
-    return cy.get(Cypress.env('emptyStateNewClusterButtonId'));
+    return cy.get(Cypress.expose('emptyStateNewClusterButtonId'));
   },
   getCreateNewClusterButton: () => {
-    return cy.get(Cypress.env('createNewClusterId')).scrollIntoView();
+    return cy.get(Cypress.expose('createNewClusterId')).scrollIntoView();
   },
 
-  deleteCluster: (clusterName = Cypress.env('CLUSTER_NAME')) => {
-    cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`)
+  deleteCluster: (clusterName = Cypress.expose('CLUSTER_NAME')) => {
+    cy.get(`${Cypress.expose('clusterRowIdPrefix')}${clusterName}`)
       .scrollIntoView()
       .should('be.visible');
-    cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`).within(() => {
+    cy.get(`${Cypress.expose('clusterRowIdPrefix')}${clusterName}`).within(() => {
       cy.get('button[aria-label="Actions"]').click();
     });
-    cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`)
+    cy.get(`${Cypress.expose('clusterRowIdPrefix')}${clusterName}`)
       .scrollIntoView()
       .should('be.visible');
-    cy.get(`${Cypress.env('buttonDeleteIdPrefix')}${clusterName}`).click();
-    cy.get(Cypress.env('deleteClusterSubmit')).should('be.visible');
-    cy.get(Cypress.env('deleteClusterSubmit')).click();
-    cy.get(`${Cypress.env('clusterRowIdPrefix')}${clusterName}`).should('not.exist');
+    cy.get(`${Cypress.expose('buttonDeleteIdPrefix')}${clusterName}`).click();
+    cy.get(Cypress.expose('deleteClusterSubmit')).should('be.visible');
+    cy.get(Cypress.expose('deleteClusterSubmit')).click();
+    cy.get(`${Cypress.expose('clusterRowIdPrefix')}${clusterName}`).should('not.exist');
   },
   getRefreshClusterListButton: () => {
     return cy.get('button[aria-label="Refresh"]');
   },
   getExtraActionsDropdown: () => {
-    return cy.get(Cypress.env('clusterListExtraActionsDropdown'));
+    return cy.get(Cypress.expose('clusterListExtraActionsDropdown'));
   },
   filterClusterList: (filter) => {
     cy.get('input[aria-label="Filter"]').fill(filter);
@@ -47,20 +47,20 @@ export const clusterListPage = {
   },
   filterSearchString: (searchString) => {
     if (searchString) {
-      cy.get(Cypress.env('searchStringId')).fill(searchString);
+      cy.get(Cypress.expose('searchStringId')).fill(searchString);
     } else {
-      cy.get(Cypress.env('searchStringId')).clear();
+      cy.get(Cypress.expose('searchStringId')).clear();
     }
   },
   getFilterStatus: () => {
-    return cy.get(Cypress.env('clusterListFilterStatusId'));
+    return cy.get(Cypress.expose('clusterListFilterStatusId'));
   },
   filterByStatus: (status) => {
     clusterListPage.getFilterStatus().click();
     cy.get('.pf-v6-c-select__menu').contains(status).click();
     clusterListPage.getFilterStatus().click();
   },
-  validateClusterNameIsVisibleInClusterList: (clusterName = Cypress.env('CLUSTER_NAME')) => {
+  validateClusterNameIsVisibleInClusterList: (clusterName = Cypress.expose('CLUSTER_NAME')) => {
     cy.newByDataTestId(`cluster-name-${clusterName}`).should('be.visible');
   },
 };

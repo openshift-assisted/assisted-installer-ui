@@ -7,7 +7,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:24:21.117Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-3: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -18,7 +18,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:24:21.114Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-2: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -29,7 +29,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:24:21.108Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-1: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -40,7 +40,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:23:33.113Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-3: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -51,7 +51,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:23:25.114Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-2: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -62,7 +62,7 @@ const clusterEvents = [
     event_time: '2023-06-09T07:23:25.108Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-1: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -73,7 +73,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:14:21.111Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-3: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -84,7 +84,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:14:13.114Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-2: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -95,7 +95,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:14:13.108Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-1: validation 'release-domain-name-resolved-correctly' is now fixed`,
     name: 'host_validation_fixed',
@@ -106,7 +106,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:13:25.115Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-3: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -117,7 +117,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:13:25.112Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-2: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -128,7 +128,7 @@ const clusterEvents = [
     event_time: '2023-06-09T02:13:25.107Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-1: validation 'release-domain-name-resolved-correctly' that used to succeed is now failing`,
     name: 'host_validation_failed',
@@ -139,7 +139,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:57:41.118Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env('HOST_RENAME')}-1: validation 'ntp-synced' is now fixed`,
+    message: `Host ${Cypress.expose('HOST_RENAME')}-1: validation 'ntp-synced' is now fixed`,
     name: 'host_validation_fixed',
     severity: 'info',
   },
@@ -148,7 +148,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:57:41.115Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env('HOST_RENAME')}-0: validation 'ntp-synced' is now fixed`,
+    message: `Host ${Cypress.expose('HOST_RENAME')}-0: validation 'ntp-synced' is now fixed`,
     name: 'host_validation_fixed',
     severity: 'info',
   },
@@ -157,7 +157,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:57:41.110Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env('HOST_RENAME')}-2: validation 'ntp-synced' is now fixed`,
+    message: `Host ${Cypress.expose('HOST_RENAME')}-2: validation 'ntp-synced' is now fixed`,
     name: 'host_validation_fixed',
     severity: 'info',
   },
@@ -166,7 +166,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:55:41.141Z',
     host_id: fakeHostIds[0],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-1: updated status from discovering to pending-for-input (Waiting for user input: Host couldn't synchronize with any NTP server ; Machine Network CIDR is undefined; the Machine Network CIDR can be defined by setting either the API or Ingress virtual IPs)`,
     name: 'host_status_updated',
@@ -177,7 +177,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:55:41.133Z',
     host_id: fakeHostIds[1],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-2: updated status from discovering to pending-for-input (Waiting for user input: Host couldn't synchronize with any NTP server ; Machine Network CIDR is undefined; the Machine Network CIDR can be defined by setting either the API or Ingress virtual IPs)`,
     name: 'host_status_updated',
@@ -188,7 +188,7 @@ const clusterEvents = [
     event_time: '2023-06-07T06:55:41.116Z',
     host_id: fakeHostIds[2],
     infra_env_id: fakeClusterInfraEnvId,
-    message: `Host ${Cypress.env(
+    message: `Host ${Cypress.expose(
       'HOST_RENAME',
     )}-0: updated status from discovering to pending-for-input (Waiting for user input: Host couldn't synchronize with any NTP server ; Machine Network CIDR is undefined; the Machine Network CIDR can be defined by setting either the API or Ingress virtual IPs)`,
     name: 'host_status_updated',

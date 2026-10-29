@@ -2,7 +2,7 @@
 
 import { fakeClusterId, fakeClusterInfraEnvId } from '../cluster/base-cluster';
 
-const isoDownloadLink = `${Cypress.env(
+const isoDownloadLink = `${Cypress.expose(
   'API_BASE_URL',
 )}/images/${fakeClusterInfraEnvId}?arch=x86_64&type=full-iso&version=4.9`;
 
@@ -25,6 +25,13 @@ const baseInfraEnv = {
   user_name: 'admin',
 };
 
+const oveInfraEnv = {
+  ...baseInfraEnv,
+  cluster_id: '',
+  name: 'disconnected-infra-env',
+  openshift_version: '4.21.27',
+};
+
 const imageDownload = {
   statusCode: 200,
   body: {
@@ -34,4 +41,4 @@ const imageDownload = {
   delay: 100,
 };
 
-export { baseInfraEnv, imageDownload, isoDownloadLink };
+export { baseInfraEnv, imageDownload, isoDownloadLink, oveInfraEnv };
