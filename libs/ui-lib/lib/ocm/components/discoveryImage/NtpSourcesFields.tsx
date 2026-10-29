@@ -1,22 +1,16 @@
 import React from 'react';
 import { Grid } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { CheckboxField } from '../ui';
-import { AdditionalNTPSourcesField } from '../ui/formik';
-import { NtpSourcesFieldsType } from '../../types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { AdditionalNTPSourcesField, CheckboxField, useTranslation } from '../../../common';
+
+export type NtpSourcesFieldsType = {
+  enableNtpSources: boolean;
+  ntpSourcesList: string;
+};
 
 export const NtpSourcesFields: React.FC = () => {
-  const { setFieldValue, values, initialValues } = useFormikContext<NtpSourcesFieldsType>();
+  const { values } = useFormikContext<NtpSourcesFieldsType>();
   const { t } = useTranslation();
-
-  const resetNtpSources = (isChecked: boolean) => {
-    if (isChecked) {
-      setFieldValue('ntpSourcesList', initialValues.ntpSourcesList);
-    } else {
-      setFieldValue('ntpSourcesList', '');
-    }
-  };
 
   return (
     <CheckboxField
@@ -26,7 +20,6 @@ export const NtpSourcesFields: React.FC = () => {
       helperText={t(
         'ai:Replaces default public NTP pools. Only the specified sources are used. Use in air-gapped or restricted networks where default pools are unreachable or not permitted.',
       )}
-      onChange={resetNtpSources}
       body={
         values.enableNtpSources && (
           <Grid hasGutter>

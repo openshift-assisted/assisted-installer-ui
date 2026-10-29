@@ -22,7 +22,6 @@ import {
 } from '@openshift-assisted/types/assisted-installer-service';
 import {
   DiscoveryImageType,
-  NtpSourcesFieldsType,
   ProxyFieldsType,
   StatusErrorType,
   SupportedCpuArchitecture,
@@ -32,14 +31,14 @@ import {
   httpProxyValidationSchema,
   httpsProxyValidationSchema,
   noProxyValidationSchema,
-  ntpSourceValidationSchema,
+  conditionalNtpSourceValidationSchema,
   sshPublicKeyValidationSchema,
   ProxyFields,
   UploadSSH,
   CertificateFields,
-  NtpSourcesFields,
 } from '../../../common';
 import { DiscoveryImageTypeDropdown, discoveryImageTypes } from './DiscoveryImageTypeDropdown';
+import { NtpSourcesFieldsType, NtpSourcesFields } from './NtpSourcesFields';
 
 export interface OcmImageCreateParams {
   /**
@@ -65,9 +64,7 @@ const validationSchema = (t: TFunction) =>
       httpProxy: httpProxyValidationSchema({ values, pairValueName: 'httpsProxy', t }),
       httpsProxy: httpsProxyValidationSchema({ values, pairValueName: 'httpProxy', t }),
       noProxy: noProxyValidationSchema(t),
-      ntpSourcesList: values.enableNtpSources
-        ? ntpSourceValidationSchema(t, false)
-        : ntpSourceValidationSchema(t),
+      ntpSourcesList: conditionalNtpSourceValidationSchema('enableNtpSources', t),
     }),
   );
 

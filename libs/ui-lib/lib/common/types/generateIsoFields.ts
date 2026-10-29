@@ -11,8 +11,3 @@ export type TrustedCertificateFieldsType = {
   enableCertificate: boolean;
   trustBundle?: InfraEnv['additionalTrustBundle'];
 };
-
-export type NtpSourcesFieldsType = {
-  enableNtpSources: boolean;
-  ntpSourcesList: string;
-};
