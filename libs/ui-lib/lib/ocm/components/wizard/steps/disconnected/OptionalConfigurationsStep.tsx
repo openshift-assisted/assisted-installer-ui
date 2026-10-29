@@ -16,8 +16,9 @@ import {
   InputField,
   ipValidationSchema,
   getFormikErrorFields,
-  ntpSourceValidationSchema,
-  NtpSourcesFields,
+  CheckboxField,
+  AdditionalNTPSourcesField,
+  conditionalNtpSourceValidationSchema,
 } from '../../../../../common';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
@@ -26,8 +27,8 @@ import { canonicalizeIp, getHostIpsFromInfraEnv } from '../staticIp/data/fromInf
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
   rendezvousIp: string;
-  enableNtpSources: boolean;
-  ntpSourcesList: string;
+  enableAdditionalNtpSources: boolean;
+  additionalNtpSources: string;
 };
 
 type OptionalConfigurationsFormProps = {
@@ -99,7 +100,29 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                 </Alert>
               )}
               <UploadSSH />
-              <NtpSourcesFields />
+
+              <CheckboxField
+                label={'Provide additional NTP sources'}
+                name="enableAdditionalNtpSources"
+                className="ai-ntp-sources-fields"
+                helperText={
+                  'Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server.'
+                }
+                body={
+                  values.enableAdditionalNtpSources && (
+                    <Grid hasGutter>
+                      <AdditionalNTPSourcesField
+                        name="additionalNtpSources"
+                        label={'Additional NTP sources'}
+                        helperText={
+                          'A comma separated list of IP or domain names of the NTP pools or servers.'
+                        }
+                        isRequired
+                      />
+                    </Grid>
+                  )
+                }
+              />
             </Form>
           </GridItem>
         </Grid>
@@ -116,25 +139,21 @@ export const OptionalConfigurationsStep = () => {
 
   const validationSchema = React.useMemo(
     () =>
-      Yup.lazy((values: OptionalConfigurationsValues) =>
-        Yup.object({
-          sshPublicKey: sshPublicKeyValidationSchema(t),
-          rendezvousIp: Yup.string()
-            .max(45, 'IP address must be at most 45 characters')
-            .concat(ipValidationSchema(t)),
-          ntpSourcesList: values.enableNtpSources
-            ? ntpSourceValidationSchema(t, false)
-            : ntpSourceValidationSchema(t),
-        }),
-      ),
+      Yup.object({
+        sshPublicKey: sshPublicKeyValidationSchema(t),
+        rendezvousIp: Yup.string()
+          .max(45, 'IP address must be at most 45 characters')
+          .concat(ipValidationSchema(t)),
+        additionalNtpSources: conditionalNtpSourceValidationSchema('enableAdditionalNtpSources', t),
+      }),
     [t],
   );
 
   const initialValues: OptionalConfigurationsValues = {
     sshPublicKey: disconnectedInfraEnv?.sshAuthorizedKey ?? '',
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
-    enableNtpSources: !!disconnectedInfraEnv?.ntpSources?.trim(),
-    ntpSourcesList: disconnectedInfraEnv?.ntpSources ?? '',
+    enableAdditionalNtpSources: !!disconnectedInfraEnv?.additionalNtpSources?.trim(),
+    additionalNtpSources: disconnectedInfraEnv?.additionalNtpSources ?? '',
   };
 
   const handleNext = React.useCallback(
@@ -149,7 +168,9 @@ export const OptionalConfigurationsStep = () => {
         const { data: updatedInfraEnv } = await InfraEnvsAPI.update(disconnectedInfraEnv.id, {
           sshAuthorizedKey: values.sshPublicKey,
           rendezvousIp: values.rendezvousIp,
-          ntpSources: values.enableNtpSources ? values.ntpSourcesList : '',
+          additionalNtpSources: values.enableAdditionalNtpSources
+            ? values.additionalNtpSources
+            : '',
         });
 
         setDisconnectedInfraEnv(updatedInfraEnv);

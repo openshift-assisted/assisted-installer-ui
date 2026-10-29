@@ -92,11 +92,11 @@ export const DisconnectedReviewStep = () => {
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
-            {disconnectedInfraEnv?.ntpSources && (
+            {disconnectedInfraEnv?.additionalNtpSources && (
               <DescriptionListGroup>
                 <DescriptionListTerm>NTP sources</DescriptionListTerm>
                 <DescriptionListDescription>
-                  {disconnectedInfraEnv.ntpSources}
+                  {disconnectedInfraEnv.additionalNtpSources}
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
