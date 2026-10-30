@@ -7,7 +7,14 @@ import {
 
 export type ClusterDetailsUpdateParams = Pick<
   V2ClusterUpdateParams,
-  'name' | 'baseDnsDomain' | 'pullSecret' | 'platform' | 'additionalNtpSource'
+  | 'name'
+  | 'baseDnsDomain'
+  | 'pullSecret'
+  | 'platform'
+  | 'additionalNtpSource'
+  | 'httpProxy'
+  | 'httpsProxy'
+  | 'noProxy'
 >;
 
 export type ClusterCreateParamsWithStaticNetworking = ClusterCreateParams & {
