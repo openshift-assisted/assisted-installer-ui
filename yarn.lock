@@ -2690,7 +2690,7 @@ __metadata:
     "@vitest/ui": ^0.34.7
     dpdm: ^4.2.0
     eslint: ^8.57.1
-    happy-dom: ^20.9.0
+    happy-dom: ^21.0.4
     msw: ^2.14.6
     prettier: 2.8.8
     rimraf: ^6.0.0
@@ -2961,6 +2961,15 @@ __metadata:
   version: 0.2.13
   resolution: "buffer-crc32@npm:0.2.13"
   checksum: 06252347ae6daca3453b94e4b2f1d3754a3b146a111d81c68924c22d91889a40623264e95e67955b1cb4a68cbedf317abeabb5140a9766ed248973096db5ce1c
+  languageName: node
+  linkType: hard
+
+"buffer-image-size@npm:^0.6.4":
+  version: 0.6.4
+  resolution: "buffer-image-size@npm:0.6.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: de18f469bfff95bd959ebd4b02fd21cb40d65b0f285b7c292977be9bda5543791880518a857a2048d909b03a8027ee5f8aa6bf8469fee3e1639c363440fb5cfc
   languageName: node
   linkType: hard
 
@@ -5376,17 +5385,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^20.9.0":
-  version: 20.9.0
-  resolution: "happy-dom@npm:20.9.0"
+"happy-dom@npm:^21.0.4":
+  version: 21.0.4
+  resolution: "happy-dom@npm:21.0.4"
   dependencies:
     "@types/node": ">=20.0.0"
     "@types/whatwg-mimetype": ^3.0.2
     "@types/ws": ^8.18.1
+    buffer-image-size: ^0.6.4
     entities: ^7.0.1
     whatwg-mimetype: ^3.0.0
-    ws: ^8.18.3
-  checksum: 6cc02c95c21204abeb6f38e554d0dc9c91fe77b7ac43d4565ea4225689226de2fc0ba1a509447c9df6dea6c34f5a7c06bc5e539c643b2fc39e4a26d139614542
+    ws: ^8.21.0
+  checksum: 36807bb77175bc8607d0aa0c7fcaffc41f7b0d7659796c01ce140c9b732a8fa5a500186e619e522546875d3bafb22d00abb0607d087c0f457738cb0176f380d2
   languageName: node
   linkType: hard
 
