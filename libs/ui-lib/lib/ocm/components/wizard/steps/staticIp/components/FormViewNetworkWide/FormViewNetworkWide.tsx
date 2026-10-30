@@ -15,10 +15,12 @@ import { StaticIpFormProps, StaticIpViewProps } from '../propTypes';
 import { networkWideValidationSchema } from './formViewNetworkWideValidationSchema';
 import { disconnectedNetworkWideValidationSchema } from './disconnectedNetworkWideValidationSchema';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
-import { useClusterWizardContext } from '../../../../clusterWizardContext';
 
-export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...props }) => {
-  const { installDisconnected } = useClusterWizardContext();
+export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({
+  infraEnv,
+  installDisconnected,
+  ...props
+}) => {
   const [formProps, setFormProps] = React.useState<StaticIpFormProps<FormViewNetworkWideValues>>();
   const [hosts, setHosts] = React.useState<FormViewHost[]>();
 
@@ -30,6 +32,7 @@ export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...
     }
     setFormProps({
       infraEnv,
+      installDisconnected,
       ...props,
       validationSchema: installDisconnected
         ? disconnectedNetworkWideValidationSchema
@@ -52,7 +55,7 @@ export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...
   }
   return (
     <StaticIpForm<FormViewNetworkWideValues> {...formProps}>
-      <FormViewNetworkWideFields hosts={hosts} />
+      <FormViewNetworkWideFields hosts={hosts} installDisconnected={installDisconnected} />
     </StaticIpForm>
   );
 };
