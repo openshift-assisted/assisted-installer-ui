@@ -56,10 +56,9 @@ const versions: Record<string, Version> = {
 };
 
 const oveVersions = {
-  '4.21.27': {
+  '4.22.21': {
     cpu_architectures: [x86],
-    default: true,
-    display_name: '4.21.27',
+    display_name: '4.22.21',
     support_level: 'production',
   },
 };
