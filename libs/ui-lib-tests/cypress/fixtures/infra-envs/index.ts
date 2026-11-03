@@ -29,7 +29,7 @@ const oveInfraEnv = {
   ...baseInfraEnv,
   cluster_id: '',
   name: 'disconnected-infra-env',
-  openshift_version: '4.21.27',
+  openshift_version: '4.22.21',
 };
 
 const imageDownload = {

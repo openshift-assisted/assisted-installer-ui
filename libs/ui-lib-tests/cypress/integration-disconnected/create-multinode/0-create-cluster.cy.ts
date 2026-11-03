@@ -21,6 +21,7 @@ describe('Assisted Disconnected UI Multinode Cluster Installation', () => {
   it('renders the single-cluster create wizard at /', () => {
     cy.wait('@infra-envs');
     cy.wait('@clusters');
+    cy.wait('@openshift-versions');
 
     cy.url().should('eq', Cypress.config().baseUrl + '/');
 
@@ -29,6 +30,8 @@ describe('Assisted Disconnected UI Multinode Cluster Installation', () => {
     clusterDetailsPage.inputClusterName();
     clusterDetailsPage.inputBaseDnsDomain();
     clusterDetailsPage.getPullSecretCheckbox().should('not.be.checked');
+
+    clusterDetailsPage.getStaticOpenShiftVersion().should('include.text', 'OpenShift 4.22.21');
 
     commonActions.verifyNextIsEnabled();
     commonActions.toNextStepAfter('Cluster details');
@@ -40,7 +43,7 @@ describe('Assisted Disconnected UI Multinode Cluster Installation', () => {
         control_plane_count: 3,
         cpu_architecture: 'x86_64',
         disk_encryption: { mode: 'tpmv2', enable_on: 'none' },
-        openshift_version: '4.21.27',
+        openshift_version: '4.22.21',
         pull_secret: fixtures.pullSecret,
       });
     });
