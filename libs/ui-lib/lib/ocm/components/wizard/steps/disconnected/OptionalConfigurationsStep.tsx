@@ -173,7 +173,14 @@ export const OptionalConfigurationsStep = () => {
             : '',
         });
 
-        setDisconnectedInfraEnv(updatedInfraEnv);
+        // Override sshAuthorizedKey with the submitted value because the
+        // backend's PATCH endpoint ignores empty-string updates to this field.
+        // Without the override the wizard context would keep the stale key from
+        // the API response, causing it to reappear after Next → Back navigation.
+        setDisconnectedInfraEnv({
+          ...updatedInfraEnv,
+          sshAuthorizedKey: values.sshPublicKey,
+        });
         moveNext();
       } catch (error) {
         handleApiError(error, () => {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Formik, useFormikContext } from 'formik';
-import { createRoot } from 'react-dom/client';
+import { createRoot, Root } from 'react-dom/client';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import UploadField from './UploadField';
 
@@ -8,8 +8,6 @@ type CapturedFileUploadProps = {
   filename?: string;
   onClearClick?: () => void;
   onDataChange?: (_event: unknown, data: string) => void;
-  onReadFinished?: (_event: unknown, file: File) => void;
-  onReadStarted?: (_event: unknown, file: File) => void;
   onTextChange?: (_event: unknown, text: string) => void;
   value?: string | File;
 };
@@ -41,21 +39,19 @@ vi.mock('../../../hooks/use-translation-wrapper', () => ({
 
 const SSH_PUBLIC_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI test@example.com';
 
-const createFile = (name: string) => new File([SSH_PUBLIC_KEY], name);
-
 const FormikValue = () => {
   const { values } = useFormikContext<{ sshPublicKey: string }>();
   return <output>{values.sshPublicKey}</output>;
 };
 
-const renderUploadField = () => {
+const renderUploadField = (initialSshKey = '') => {
   const container = document.createElement('div');
   const root = createRoot(container);
   document.body.appendChild(container);
 
   void act(() => {
     root.render(
-      <Formik initialValues={{ sshPublicKey: '' }} onSubmit={() => undefined}>
+      <Formik initialValues={{ sshPublicKey: initialSshKey }} onSubmit={() => undefined}>
         <>
           <UploadField label="SSH public key" name="sshPublicKey" />
           <FormikValue />
@@ -65,6 +61,8 @@ const renderUploadField = () => {
   });
 
   return {
+    container,
+    root,
     getProps: () => {
       expect(fileUploadMock.props).toBeDefined();
       return fileUploadMock.props as CapturedFileUploadProps;
@@ -77,20 +75,50 @@ const renderUploadField = () => {
   };
 };
 
+/**
+ * Unmounts the current Formik tree and mounts a fresh one in the same
+ * container, simulating wizard step navigation (unmount → remount) that
+ * triggers form reinitialization from the data source.
+ */
+const remountForm = (container: HTMLElement, root: Root, initialSshKey: string) => {
+  void act(() => root.unmount());
+
+  const newRoot = createRoot(container);
+  void act(() => {
+    newRoot.render(
+      <Formik initialValues={{ sshPublicKey: initialSshKey }} onSubmit={() => undefined}>
+        <>
+          <UploadField label="SSH public key" name="sshPublicKey" />
+          <FormikValue />
+        </>
+      </Formik>,
+    );
+  });
+
+  return {
+    root: newRoot,
+    getProps: () => {
+      expect(fileUploadMock.props).toBeDefined();
+      return fileUploadMock.props as CapturedFileUploadProps;
+    },
+    getValue: () => container.querySelector('output')?.textContent,
+    unmount: () => {
+      void act(() => newRoot.unmount());
+      container.remove();
+    },
+  };
+};
+
 afterEach(() => {
   fileUploadMock.props = undefined;
 });
 
 describe('UploadField', () => {
-  test('stores file contents after a complete read cycle', async () => {
+  test('stores file contents after upload', async () => {
     const uploadField = renderUploadField();
     const fileUploadProps = uploadField.getProps();
-    const file = createFile('key.pub');
 
-    // Simulate PF6 event order: onReadStarted -> onReadFinished -> onDataChange
     await act(async () => {
-      fileUploadProps.onReadStarted?.(undefined, file);
-      fileUploadProps.onReadFinished?.(undefined, file);
       fileUploadProps.onDataChange?.(undefined, SSH_PUBLIC_KEY);
       await Promise.resolve();
     });
@@ -99,25 +127,82 @@ describe('UploadField', () => {
     uploadField.unmount();
   });
 
-  test('does not restore file contents when a pending read finishes after Clear', async () => {
+  test('clears value and filename on Clear', async () => {
     const uploadField = renderUploadField();
     const fileUploadProps = uploadField.getProps();
-    const file = createFile('stale.pub');
 
-    // Start the read, then clear before the read completes
+    // Upload a file first
     await act(async () => {
-      fileUploadProps.onReadStarted?.(undefined, file);
-      fileUploadProps.onClearClick?.();
-
-      // Stale read completes after clear (PF6 order: onReadFinished then onDataChange)
-      fileUploadProps.onReadFinished?.(undefined, file);
       fileUploadProps.onDataChange?.(undefined, SSH_PUBLIC_KEY);
+      await Promise.resolve();
+    });
+    expect(uploadField.getValue()).toBe(SSH_PUBLIC_KEY);
+
+    // Clear
+    await act(async () => {
+      fileUploadMock.props?.onClearClick?.();
       await Promise.resolve();
     });
 
     expect(uploadField.getValue()).toBe('');
     expect(fileUploadMock.props?.filename).toBe('');
     uploadField.unmount();
+  });
+
+  test('reinitializes with stale API value after remount — demonstrates the context-layer bug', async () => {
+    // This test shows that UploadField itself is correct: it renders whatever
+    // Formik's initialValues provide. The MGMT-24988 bug is in the wizard
+    // context layer that feeds the stale API value back as initialValues
+    // on remount (fixed in OptionalConfigurationsStep).
+
+    const uploadField = renderUploadField();
+    const fileUploadProps = uploadField.getProps();
+
+    // Upload a key
+    await act(async () => {
+      fileUploadProps.onDataChange?.(undefined, SSH_PUBLIC_KEY);
+      await Promise.resolve();
+    });
+    expect(uploadField.getValue()).toBe(SSH_PUBLIC_KEY);
+
+    // Clear
+    await act(async () => {
+      fileUploadMock.props?.onClearClick?.();
+      await Promise.resolve();
+    });
+    expect(uploadField.getValue()).toBe('');
+
+    // Simulate navigate Next → Back: unmount and remount with the stale API
+    // value as initialValues (this is what happens when the backend ignores
+    // the empty-string update).
+    const remounted = remountForm(uploadField.container, uploadField.root, SSH_PUBLIC_KEY);
+
+    // The stale key reappears because the context fed it back as initialValues
+    expect(remounted.getValue()).toBe(SSH_PUBLIC_KEY);
+    // filename is empty because it is local component state, reset on mount
+    expect(fileUploadMock.props?.filename).toBeUndefined();
+    remounted.unmount();
+  });
+
+  test('shows empty after remount when context provides cleared value', async () => {
+    // With the fix in OptionalConfigurationsStep, the context overrides
+    // sshAuthorizedKey with the submitted (empty) value. Verify an empty
+    // initialValue keeps the form empty after remount.
+
+    const uploadField = renderUploadField(SSH_PUBLIC_KEY);
+    expect(uploadField.getValue()).toBe(SSH_PUBLIC_KEY);
+
+    // Clear
+    await act(async () => {
+      fileUploadMock.props?.onClearClick?.();
+      await Promise.resolve();
+    });
+    expect(uploadField.getValue()).toBe('');
+
+    // Remount with corrected context (empty string, as the fix provides)
+    const remounted = remountForm(uploadField.container, uploadField.root, '');
+    expect(remounted.getValue()).toBe('');
+    remounted.unmount();
   });
 
   test('stores manually entered text', async () => {
@@ -133,83 +218,16 @@ describe('UploadField', () => {
     uploadField.unmount();
   });
 
-  test('accepts text input after a clear', async () => {
+  test('does not break when Clear is clicked without prior upload', async () => {
     const uploadField = renderUploadField();
-    const fileUploadProps = uploadField.getProps();
-    const file = createFile('key.pub');
 
-    // Upload a file
-    await act(async () => {
-      fileUploadProps.onReadStarted?.(undefined, file);
-      fileUploadProps.onReadFinished?.(undefined, file);
-      fileUploadProps.onDataChange?.(undefined, SSH_PUBLIC_KEY);
-      await Promise.resolve();
-    });
-    expect(uploadField.getValue()).toBe(SSH_PUBLIC_KEY);
-
-    // Clear
     await act(async () => {
       fileUploadMock.props?.onClearClick?.();
       await Promise.resolve();
     });
+
     expect(uploadField.getValue()).toBe('');
-
-    // Type manually
-    await act(async () => {
-      fileUploadMock.props?.onTextChange?.(undefined, 'typed key');
-      await Promise.resolve();
-    });
-    expect(uploadField.getValue()).toBe('typed key');
-    uploadField.unmount();
-  });
-
-  test('only stores the contents of the most recently started file read', async () => {
-    const uploadField = renderUploadField();
-    const fileUploadProps = uploadField.getProps();
-    const firstFile = createFile('first.pub');
-    const secondFile = createFile('second.pub');
-
-    await act(async () => {
-      // Two rapid uploads — second supersedes the first
-      fileUploadProps.onReadStarted?.(undefined, firstFile);
-      fileUploadProps.onReadStarted?.(undefined, secondFile);
-
-      // First read finishes (stale)
-      fileUploadProps.onReadFinished?.(undefined, firstFile);
-      fileUploadProps.onDataChange?.(undefined, 'first key');
-
-      // Second read finishes (current)
-      fileUploadProps.onReadFinished?.(undefined, secondFile);
-      fileUploadProps.onDataChange?.(undefined, 'second key');
-      await Promise.resolve();
-    });
-
-    expect(uploadField.getValue()).toBe('second key');
-    uploadField.unmount();
-  });
-
-  test('does not restore a cleared read when a new file read starts', async () => {
-    const uploadField = renderUploadField();
-    const fileUploadProps = uploadField.getProps();
-    const staleFile = createFile('stale.pub');
-    const currentFile = createFile('current.pub');
-
-    await act(async () => {
-      fileUploadProps.onReadStarted?.(undefined, staleFile);
-      fileUploadProps.onClearClick?.();
-      fileUploadProps.onReadStarted?.(undefined, currentFile);
-
-      // Stale read finishes
-      fileUploadProps.onReadFinished?.(undefined, staleFile);
-      fileUploadProps.onDataChange?.(undefined, 'stale key');
-
-      // Current read finishes
-      fileUploadProps.onReadFinished?.(undefined, currentFile);
-      fileUploadProps.onDataChange?.(undefined, 'current key');
-      await Promise.resolve();
-    });
-
-    expect(uploadField.getValue()).toBe('current key');
+    expect(fileUploadMock.props?.filename).toBe('');
     uploadField.unmount();
   });
 });

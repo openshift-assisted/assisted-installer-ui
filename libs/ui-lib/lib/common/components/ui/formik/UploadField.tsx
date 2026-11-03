@@ -32,8 +32,6 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
 
   const [filename, setFilename] = React.useState<string>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
-  const latestFileRef = React.useRef<File | null>(null);
-  const readyForDataRef = React.useRef(false);
 
   const [field, { touched, error }, { setValue, setTouched }] = useField<string | File>(name);
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -64,16 +62,10 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
         filename={filename}
         data-testid={`upload-field-${fieldId}`}
         onDataChange={(_event, file: string) => {
-          if (!readyForDataRef.current) {
-            return;
-          }
-          readyForDataRef.current = false;
           setValue(file);
           setTouched(true);
         }}
         onTextChange={(_event, file: string) => {
-          latestFileRef.current = null;
-          readyForDataRef.current = false;
           setValue(file);
           setTouched(true);
         }}
@@ -99,17 +91,8 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
             onBlur && onBlur(e, file);
           }
         }}
-        onReadStarted={(_event, file) => {
-          latestFileRef.current = file;
-          readyForDataRef.current = false;
-          setIsFileUploading(true);
-        }}
-        onReadFinished={(_event, file) => {
-          if (latestFileRef.current === file) {
-            readyForDataRef.current = true;
-          }
-          setIsFileUploading(false);
-        }}
+        onReadStarted={() => setIsFileUploading(true)}
+        onReadFinished={() => setIsFileUploading(false)}
         isLoading={isFileUploading}
         disabled={isDisabled}
         allowEditingUploadedText={allowEdittingUploadedText}
@@ -118,8 +101,6 @@ const UploadField: React.FC<React.PropsWithChildren<UploadFieldProps>> = ({
           maxSize: MAX_FILE_SIZE,
         }}
         onClearClick={() => {
-          latestFileRef.current = null;
-          readyForDataRef.current = false;
           setFilename('');
           setValue('');
         }}
