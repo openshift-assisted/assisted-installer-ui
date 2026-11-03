@@ -1,6 +1,6 @@
 import { HttpRequestInterceptor } from 'cypress/types/net-stubbing';
 
-import { hasWizardSignal } from '../utils';
+import { hasWizardSignal, setLastWizardSignal } from '../utils';
 import * as fixtures from '../../fixtures';
 import {
   allClustersApiPath,
@@ -92,6 +92,11 @@ export const addClusterPatchAndDetailsIntercepts = () => {
       mockClusterResponse(req);
     }
   });
+
+  cy.intercept('POST', `${clusterApiPath}/actions/install`, (req) => {
+    setLastWizardSignal('CLUSTER_PREPARING_FOR_INSTALLATION');
+    mockClusterResponse(req);
+  }).as('install-cluster');
 
   cy.intercept('GET', `${clusterApiPath}/ui-settings`, mockUISettingsResponse).as('ui-settings');
   cy.intercept('PUT', `${clusterApiPath}/ui-settings`, '""').as('update-ui-settings');

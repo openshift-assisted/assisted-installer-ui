@@ -33,6 +33,10 @@ const signalOrder = [
   // End of Day1 flow
   'READY_TO_INSTALL',
 
+  // Installation progress
+  'CLUSTER_PREPARING_FOR_INSTALLATION',
+  'CLUSTER_INSTALLING',
+
   // Day2 flow
   'CLUSTER_FINISHED_INSTALLATION',
   'CREATED_DAY2_CLUSTER',
