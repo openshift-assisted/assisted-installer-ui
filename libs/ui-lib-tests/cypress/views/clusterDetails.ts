@@ -7,6 +7,9 @@ export const clusterDetailsPage = {
   inputClusterName: (clusterName = Cypress.expose('CLUSTER_NAME')) => {
     clusterDetailsPage.getClusterNameField().should('be.visible').clear().type(clusterName);
   },
+  getStaticOpenShiftVersion: () => {
+    return cy.get('#form-static-openshiftVersion-field');
+  },
   getOpenshiftVersionField: () => {
     return cy.get(Cypress.expose('openshiftVersionFieldId'));
   },
