@@ -15,4 +15,23 @@ const oveRenamedHosts = oveBoundHosts.map((host, index) =>
 
 const oveReadyHosts = oveRenamedHosts.map(hostReady);
 
-export { oveBoundHosts, oveUnboundHosts, oveRenamedHosts, oveReadyHosts };
+const ovePreparingHosts = oveReadyHosts.map((host) => ({
+  ...host,
+  status: 'preparing-for-installation',
+  status_info: 'Host finished successfully to prepare for installation',
+}));
+
+const oveInstallingHosts = oveReadyHosts.map((host) => ({
+  ...host,
+  status: 'installing',
+  status_info: 'Installation is in progress',
+}));
+
+export {
+  oveBoundHosts,
+  oveUnboundHosts,
+  oveRenamedHosts,
+  oveReadyHosts,
+  ovePreparingHosts,
+  oveInstallingHosts,
+};
