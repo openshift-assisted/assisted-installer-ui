@@ -1,30 +1,17 @@
 import * as React from 'react';
-import { Switch, Tooltip } from '@patternfly/react-core';
-import { useTranslation } from '../../../../../common';
+import { Switch } from '@patternfly/react-core';
 import { useClusterWizardContext } from '../../clusterWizardContext';
 
-export const InstallDisconnectedSwitch = ({ isDisabled }: { isDisabled?: boolean }) => {
-  const { t } = useTranslation();
+export const InstallDisconnectedSwitch = () => {
   const { installDisconnected, setInstallDisconnected } = useClusterWizardContext();
 
-  const switchBtn = (
+  return (
     <Switch
       id="disconnected-install-switch"
       isChecked={installDisconnected}
       onChange={(_, checked) => setInstallDisconnected(checked)}
       ouiaId="DisconnectedInstall"
-      isDisabled={isDisabled}
-      label={<>{"I'm installing on a disconnected/air-gapped/secured environment"}</>}
+      label={"I'm installing on a disconnected/air-gapped/secured environment"}
     />
-  );
-
-  return isDisabled ? (
-    <Tooltip
-      content={<div>{t('ai:This option is not editable after the draft cluster is created')}</div>}
-    >
-      {switchBtn}
-    </Tooltip>
-  ) : (
-    switchBtn
   );
 };
