@@ -78,6 +78,9 @@ export const getScenarioFixtureMapping = () => {
     case 'AI_OVE_CREATE_MULTINODE':
       fixtureMapping = fixtures.createOveMultinodeFixtureMapping;
       break;
+    case 'AI_OVE_CREATE_SINGLENODE':
+      fixtureMapping = fixtures.createOveSinglenodeFixtureMapping;
+      break;
     default:
       break;
   }
