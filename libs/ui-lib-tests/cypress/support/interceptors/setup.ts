@@ -61,6 +61,9 @@ const setScenarioEnvVars = (activeScenario) => {
       Cypress.expose('CLUSTER_NAME', 'ai-ove-sno');
       Cypress.expose('NUM_MASTERS', 1);
       break;
+    case 'AI_OVE_CREATE_DUALSTACK':
+      Cypress.expose('CLUSTER_NAME', 'ai-ove-dualstack');
+      break;
     default:
       break;
   }
