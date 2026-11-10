@@ -6,31 +6,37 @@ import {
   clusterInstallingBuilder,
   clusterPreparingForInstallationBuilder,
 } from '../create-sno/6-cluster-installing';
+import { sshKey } from '../data';
 import { oveInfraEnv } from '../infra-envs';
-import { oveCluster } from './1-cluster-created';
+import { oveCluster, oveMultinode } from './1-cluster-created';
 import {
   oveBoundHosts,
+  oveBoundSNOHost,
   oveInstallingHosts,
   ovePreparingHosts,
   oveReadyHosts,
+  oveReadySNOHost,
   oveRenamedHosts,
+  oveRenamedSNOHost,
   oveUnboundHosts,
+  oveUnboundSNOHost,
 } from './hosts';
 
-const oveHostDiscoveredCluster = () => hostDiscoveredBuilder(oveCluster);
-const oveHostRenamedCluster = () => hostRenamedBuilder(oveHostDiscoveredCluster());
-const readyToInstallCluster = clusterReadyBuilder(oveHostRenamedCluster());
+const oveHostDiscoveredCluster = (cluster) => hostDiscoveredBuilder(cluster);
+const oveHostRenamedCluster = (cluster) => hostRenamedBuilder(oveHostDiscoveredCluster(cluster));
+const readyToInstallCluster = (cluster) => clusterReadyBuilder(oveHostRenamedCluster(cluster));
 
 const createOveMultinodeFixtureMapping = {
   clusters: {
-    default: oveCluster,
-    HOST_DISCOVERED_3: oveHostDiscoveredCluster(),
-    HOST_RENAMED_3: oveHostRenamedCluster(),
-    READY_TO_INSTALL: readyToInstallCluster,
-    ONLY_DUMMY_CUSTOM_MANIFEST_ADDED: readyToInstallCluster,
-    CLUSTER_PREPARING_FOR_INSTALLATION:
-      clusterPreparingForInstallationBuilder(readyToInstallCluster),
-    CLUSTER_INSTALLING: clusterInstallingBuilder(readyToInstallCluster),
+    default: oveMultinode,
+    HOST_DISCOVERED_3: oveHostDiscoveredCluster(oveMultinode),
+    HOST_RENAMED_3: oveHostRenamedCluster(oveMultinode),
+    READY_TO_INSTALL: readyToInstallCluster(oveMultinode),
+    ONLY_DUMMY_CUSTOM_MANIFEST_ADDED: readyToInstallCluster(oveMultinode),
+    CLUSTER_PREPARING_FOR_INSTALLATION: clusterPreparingForInstallationBuilder(
+      readyToInstallCluster(oveMultinode),
+    ),
+    CLUSTER_INSTALLING: clusterInstallingBuilder(readyToInstallCluster(oveMultinode)),
   },
   hosts: {
     default: [],
@@ -52,4 +58,41 @@ const createOveMultinodeFixtureMapping = {
   manifestContent: '',
 };
 
-export { createOveMultinodeFixtureMapping, oveBoundHosts, oveUnboundHosts };
+const createOveSinglenodeFixtureMapping = {
+  clusters: {
+    default: oveCluster,
+    HOST_DISCOVERED_1: oveHostDiscoveredCluster(oveCluster),
+    HOST_RENAMED_1: oveHostRenamedCluster(oveCluster),
+    READY_TO_INSTALL: readyToInstallCluster(oveCluster),
+    ONLY_DUMMY_CUSTOM_MANIFEST_ADDED: readyToInstallCluster(oveCluster),
+    CLUSTER_PREPARING_FOR_INSTALLATION: clusterPreparingForInstallationBuilder(
+      readyToInstallCluster(oveCluster),
+    ),
+    CLUSTER_INSTALLING: clusterInstallingBuilder(readyToInstallCluster(oveCluster)),
+  },
+  hosts: {
+    default: [],
+    HOST_DISCOVERED_1: oveBoundSNOHost,
+    HOST_RENAMED_1: oveRenamedSNOHost,
+    READY_TO_INSTALL: oveReadySNOHost,
+    ONLY_DUMMY_CUSTOM_MANIFEST_ADDED: oveReadySNOHost,
+  },
+  bundles: bundles,
+  supported_operators: supported_operators,
+  infraEnvs: {
+    default: { ...oveInfraEnv, ssh_authorized_key: sshKey },
+  },
+  manifests: [
+    { file_name: 'system_manifest.yaml', folder: 'manifests', manifest_source: 'system' },
+  ],
+  manifestContent: '',
+};
+
+export {
+  createOveMultinodeFixtureMapping,
+  createOveSinglenodeFixtureMapping,
+  oveBoundHosts,
+  oveUnboundHosts,
+  oveBoundSNOHost,
+  oveUnboundSNOHost,
+};
