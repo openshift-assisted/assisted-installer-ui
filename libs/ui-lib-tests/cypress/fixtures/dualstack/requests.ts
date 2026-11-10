@@ -69,3 +69,24 @@ export const dualStackNetworkingRequest = {
     { ip: '1001:db9::2', cluster_id: fakeClusterId },
   ],
 };
+
+export const ipv6SingleStackNetworkingRequest = {
+  ssh_public_key: '',
+  vip_dhcp_allocation: false,
+  api_vips: [{ ip: '1001:db9::1', cluster_id: fakeClusterId }],
+  ingress_vips: [{ ip: '1001:db9::2', cluster_id: fakeClusterId }],
+  network_type: 'OVNKubernetes',
+  machine_networks: [],
+  cluster_networks: [
+    {
+      cidr: 'fd01::/48',
+      host_prefix: 64,
+    },
+  ],
+  service_networks: [
+    {
+      cidr: 'fd02::/112',
+    },
+  ],
+  user_managed_networking: false,
+};

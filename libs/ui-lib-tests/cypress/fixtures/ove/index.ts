@@ -8,6 +8,8 @@ import {
 } from '../create-sno/6-cluster-installing';
 import { sshKey } from '../data';
 import { oveInfraEnv } from '../infra-envs';
+import { dualstackClusterBase, withDualStackNetworks } from '../dualstack/1-network-ready';
+import { clusterReadyBuilder as dualstackClusterReadyBuilder } from '../dualstack/5-cluster-ready';
 import { oveCluster, oveMultinode } from './1-cluster-created';
 import {
   oveBoundHosts,
@@ -58,6 +60,8 @@ const createOveMultinodeFixtureMapping = {
   manifestContent: '',
 };
 
+// SNO
+
 const createOveSinglenodeFixtureMapping = {
   clusters: {
     default: oveCluster,
@@ -88,8 +92,30 @@ const createOveSinglenodeFixtureMapping = {
   manifestContent: '',
 };
 
+// Dualstack
+
+const oveDualstackBase = {
+  ...dualstackClusterBase,
+  name: 'ai-ove-dualstack',
+  network_type: 'OVNKubernetes',
+};
+const oveDualstackSelected = withDualStackNetworks(oveDualstackBase);
+
+const createOveDualstackFixtureMapping = {
+  clusters: {
+    NETWORKING_DUAL_STACK_DISCOVERED: oveDualstackBase,
+    NETWORKING_DUAL_STACK_SELECT_SINGLE_STACK: oveDualstackBase,
+    NETWORKING_DUAL_STACK_SELECT_DUAL_STACK: oveDualstackSelected,
+    READY_TO_INSTALL: dualstackClusterReadyBuilder(oveDualstackSelected),
+  },
+  infraEnvs: {
+    default: oveInfraEnv,
+  },
+};
+
 export {
   createOveMultinodeFixtureMapping,
+  createOveDualstackFixtureMapping,
   createOveSinglenodeFixtureMapping,
   oveBoundHosts,
   oveUnboundHosts,

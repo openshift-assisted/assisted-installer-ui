@@ -13,6 +13,9 @@ export const networkingPage = {
   getStackTypeDualStack: () => {
     return cy.get('#form-radio-stackType-dualStack-field');
   },
+  getSingleStackLabel: () => {
+    return cy.get('[for="form-radio-stackType-singleStack-field"]');
+  },
   getStackTypeInput: () => {
     return cy.get('input[name="stackType"]');
   },
@@ -37,6 +40,12 @@ export const networkingPage = {
         const text = element.text();
         cy.get('#form-input-machineNetworks-1-cidr-field').select(text);
       });
+  },
+  selectPrimaryMachineNetworkSubnet: (cidrText: string) => {
+    networkingPage.getClusterSubnetCidrIpv4().click();
+    cy.get('#form-input-machineNetworks-0-cidr-field-dropdown')
+      .contains('[role="menuitem"]', cidrText)
+      .click();
   },
   setHostInterfaceName: (idx) => {
     // host rows increment by 2
@@ -197,7 +206,10 @@ export const networkingPage = {
       .type(ipv6ServiceNetworkCidr);
   },
   statusPopover: {
-    waitForPrimaryStatusButton: (idx, timeout = Cypress.expose('WAIT_FOR_PRIMARY_STATUS_BUTTON')) => {
+    waitForPrimaryStatusButton: (
+      idx,
+      timeout = Cypress.expose('WAIT_FOR_PRIMARY_STATUS_BUTTON'),
+    ) => {
       cy.get(
         `[data-testid=host-row-${idx}] > ${Cypress.expose(
           'nicStatus',
