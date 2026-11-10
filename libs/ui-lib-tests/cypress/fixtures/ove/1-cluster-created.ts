@@ -1,10 +1,11 @@
 import { baseCluster, fakeClusterId } from '../cluster/base-cluster';
+import { sshKey } from '../data';
 
 const oveCluster = {
-  ...baseCluster('ai-ove-mno'),
+  ...baseCluster('ai-ove-sno'),
   openshift_version: '4.22.21',
   user_managed_networking: false,
-  control_plane_count: 3,
+  control_plane_count: 1,
   ocp_release_image: 'quay.io/openshift-release-dev/ocp-release@sha256:abc',
 
   cluster_networks: [
@@ -54,6 +55,14 @@ const oveCluster = {
   status_info: 'Cluster is not ready for install',
   status_updated_at: '2026-09-04T16:19:51.086Z',
   updated_at: '2026-09-04T16:19:51.088294Z',
+  ssh_public_key: sshKey,
 };
 
-export { oveCluster };
+const oveMultinode = {
+  ...oveCluster,
+  control_plane_count: 3,
+  name: 'ai-ove-mno',
+  ssh_public_key: undefined,
+};
+
+export { oveCluster, oveMultinode };

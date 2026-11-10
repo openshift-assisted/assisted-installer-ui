@@ -21,15 +21,27 @@ export const addDay1HostIntercepts = () => {
       req.reply(
         hasWizardSignal('HOST_DISCOVERED_3') ? fixtures.oveBoundHosts : fixtures.oveUnboundHosts,
       );
+    } else if (Cypress.expose('AI_SCENARIO') === 'AI_OVE_CREATE_SINGLENODE') {
+      req.reply(
+        hasWizardSignal('HOST_DISCOVERED_1')
+          ? fixtures.oveBoundSNOHost
+          : fixtures.oveUnboundSNOHost,
+      );
     } else {
       req.reply([]);
     }
   }).as('get-hosts');
 
   cy.intercept('POST', `${infraEnvApiPath}/hosts/*/actions/bind`, (req) => {
-    const boundHostId = req.url.match(/\/hosts\/(.+?)\/actions\/bind/)?.[1];
-    const index = fixtures.hostIds.findIndex((hostId) => hostId === boundHostId);
-    req.alias = `bind-host-${index + 1}`;
-    req.reply(fixtures.oveBoundHosts[index]);
+    if (Cypress.expose('AI_SCENARIO') === 'AI_OVE_CREATE_MULTINODE') {
+      const boundHostId = req.url.match(/\/hosts\/(.+?)\/actions\/bind/)?.[1];
+      const index = fixtures.hostIds.findIndex((hostId) => hostId === boundHostId);
+      req.alias = `bind-host-${index + 1}`;
+
+      req.reply(fixtures.oveBoundHosts[index]);
+    } else if (Cypress.expose('AI_SCENARIO') === 'AI_OVE_CREATE_SINGLENODE') {
+      req.reply(fixtures.oveBoundSNOHost[0]);
+      req.alias = 'bind-host-1';
+    }
   });
 };

@@ -4,7 +4,13 @@ import { getScenarioFixtureMapping } from './utils';
 
 export const mockBundlesResponse: HttpRequestInterceptor = (req) => {
   const fixtureMapping = getScenarioFixtureMapping();
-  req.reply(fixtureMapping?.bundles || []);
+  let bundles;
+  if (req.query['feature_ids'] === 'SNO') {
+    bundles = fixtureMapping?.bundles?.filter((bundle: any) => bundle.id !== 'virtualization');
+  } else {
+    bundles = fixtureMapping?.bundles;
+  }
+  req.reply(bundles || []);
 };
 
 export const mockSupportedOperators: HttpRequestInterceptor = (req) => {
