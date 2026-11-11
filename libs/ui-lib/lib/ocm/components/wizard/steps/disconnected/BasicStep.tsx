@@ -34,6 +34,7 @@ import { HostsNetworkConfigurationType } from '../../../../services/types';
 import { getDummyInfraEnvField } from '../staticIp/data/dummyData';
 import { getStaticNetworkConfig } from '../staticIp/data/fromInfraEnv';
 import { InstallDisconnectedSwitch } from './InstallDisconnectedSwitch';
+import { HostsNetworkConfigurationControlGroup } from '../clusterDetails/fields';
 
 const DISCONNECTED_IMAGE_TYPE: ImageType = 'disconnected-iso';
 const DISCONNECTED_CLUSTER_NAME = 'disconnected-cluster';
@@ -141,8 +142,7 @@ const BasicStepForm: React.FC<BasicStepFormProps> = ({
                   {cpuArchitecture}
                 </StaticTextField>
 
-                {/* Temporarily hidden until the feature is properly supported */}
-                {/* <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} /> */}
+                <HostsNetworkConfigurationControlGroup clusterExists={false} isDisabled={false} />
 
                 {!isInOcm && <PullSecret isOcm={false} defaultPullSecret={defaultPullSecret} />}
               </Form>
