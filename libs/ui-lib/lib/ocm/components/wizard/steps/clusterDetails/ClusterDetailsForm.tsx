@@ -178,10 +178,10 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
               <GridItem>
                 <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
               </GridItem>
-              {!isSingleClusterFeatureEnabled && (
+              {!(isSingleClusterFeatureEnabled || cluster) && (
                 <GridItem>
                   <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapSm' }}>
-                    <InstallDisconnectedSwitch isDisabled={!!cluster} />
+                    <InstallDisconnectedSwitch />
                   </Flex>
                 </GridItem>
               )}
