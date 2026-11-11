@@ -68,7 +68,7 @@ export const getApproveNodesInClLink = (ocpVersion?: string) =>
   )}/html/installing_on_any_platform/installing-platform-agnostic#installation-approve-csrs_installing-platform-agnostic`;
 
 //Static Ip configuration
-export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
+export const NMSTATE_EXAMPLES_LINK = `https://docs.redhat.com/en/documentation/assisted_installer_for_openshift_container_platform/${getYearForAssistedInstallerDocumentationLink()}/html/installing_openshift_container_platform_with_the_assisted_installer/installing-with-ui#configuring-static-networks-using-yaml-view_installing-with-ui`;
 
 export const getOCPStaticIPDocLink = (docVersion = '2.8') =>
   `https://docs.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#on-prem-creating-your-cluster-with-the-cli-nmstateconfig`;
