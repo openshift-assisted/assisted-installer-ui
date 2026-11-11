@@ -33,6 +33,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   infraEnv,
   updateInfraEnv,
   onFormStateChange: onFormStateChangeParent,
+  installDisconnected,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
@@ -69,6 +70,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     infraEnv,
     updateInfraEnv,
     showEmptyValues: viewChanged && !prefillFromInfraEnv,
+    installDisconnected,
   };
 
   const content = (() => {

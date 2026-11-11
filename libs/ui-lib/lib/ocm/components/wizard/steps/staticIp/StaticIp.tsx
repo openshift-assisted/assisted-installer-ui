@@ -29,6 +29,7 @@ export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   cluster,
   infraEnv,
   updateInfraEnv,
+  installDisconnected,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -63,7 +64,7 @@ export const StaticIp: React.FC<StaticIpProps & { cluster?: Cluster }> = ({
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <WithErrorBoundary title="Failed to load Static IP step">
-        <StaticIpPage {...{ infraEnv, updateInfraEnv, onFormStateChange }} />
+        <StaticIpPage {...{ infraEnv, updateInfraEnv, installDisconnected, onFormStateChange }} />
       </WithErrorBoundary>
     </ClusterWizardStep>
   );

@@ -1,5 +1,5 @@
 /**
- * The signal order determinesa sequence of events.
+ * The signal order determines a sequence of events.
  * When a signal is given, it is implied that the previous steps
  * have already taken place
  */
@@ -37,6 +37,7 @@ const signalOrder = [
   'CLUSTER_FINISHED_INSTALLATION',
   'CREATED_DAY2_CLUSTER',
   'ADDED_SECOND_CPU_ARCHITECTURE',
+  'DAY2_STATIC_IP_CONFIGURED',
 ];
 
 export type SignalName = (typeof signalOrder)[number];

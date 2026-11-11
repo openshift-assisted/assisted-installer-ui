@@ -19,6 +19,7 @@ export type StaticIpFormState = {
 export type StaticIpProps = {
   infraEnv: InfraEnv;
   updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
+  installDisconnected?: boolean;
 };
 
 export type StaticIpPageProps = StaticIpProps & {
