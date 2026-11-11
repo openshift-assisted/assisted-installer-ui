@@ -1,45 +1,45 @@
 // Generate ISO Modal
-Cypress.env('generateDiscoveryIsoModalId', '#generate-discovery-iso-modal');
-Cypress.env('sshPublicKeyText', 'SSH public key');
-Cypress.env('sshPublicKeyFilenameId', '#sshPublicKey-filename');
-Cypress.env('dragAndDropFileText', 'Drag a file here or browse to upload');
-Cypress.env('sshPublicKeyBrowseButtonId', '#sshPublicKey-browse-button');
-Cypress.env('sshPublicKeyFieldId', '#sshPublicKey');
-Cypress.env('formRadioImageTypeMinIsoFieldId', '#form-radio-imageType-minimal-iso-field');
-Cypress.env('sshPulicKeyFieldHelperId', '#form-input-sshPublicKey-discovery-field-helper');
-Cypress.env('enableProxyFieldId', '#form-checkbox-enableProxy-field');
-Cypress.env('httpProxyFieldHelperId', '#form-input-httpProxy-field-helper');
-Cypress.env('httpsProxyFieldHelperId', '#form-input-httpsProxy-field-helper');
-Cypress.env('noProxyFieldHelperId', '#form-input-noProxy-field-helper');
-Cypress.env('hostnameFieldHelperId', '#form-input-hostname-field-helper');
-Cypress.env('generateIsoModalFooterText', 'Generate Discovery ISO');
-Cypress.env('httpProxyFieldId', '#form-input-httpProxy-field');
-Cypress.env('httpsProxyFieldId', '#form-input-httpsProxy-field');
-Cypress.env('noProxyFieldId', '#form-input-noProxy-field');
-Cypress.env('isoReadyToDownloadText', 'Discovery ISO is ready to be downloaded');
-Cypress.env('editIso', `[data-testid=edit-iso-btn]`);
-Cypress.env('closeIso', `[data-testid=close-iso-btn]`);
-Cypress.env('hostRole', `[data-testid=host-role]`);
-Cypress.env('hostnameFieldId', '#form-input-hostname-field');
-Cypress.env('deleteHostSubmit', `[data-testid=delete-host-submit]`);
-Cypress.env('hostInventoryDownloadDiscoveryIso', '#host-inventory-button-download-discovery-iso');
-Cypress.env('hostInventoryDownloadDiscoveryIsoButtonText', 'Add host');
-Cypress.env(
+Cypress.expose('generateDiscoveryIsoModalId', '#generate-discovery-iso-modal');
+Cypress.expose('sshPublicKeyText', 'SSH public key');
+Cypress.expose('sshPublicKeyFilenameId', '#sshPublicKey-filename');
+Cypress.expose('dragAndDropFileText', 'Drag a file here or browse to upload');
+Cypress.expose('sshPublicKeyBrowseButtonId', '#sshPublicKey-browse-button');
+Cypress.expose('sshPublicKeyFieldId', '#sshPublicKey');
+Cypress.expose('formRadioImageTypeMinIsoFieldId', '#form-radio-imageType-minimal-iso-field');
+Cypress.expose('sshPulicKeyFieldHelperId', '#form-input-sshPublicKey-discovery-field-helper');
+Cypress.expose('enableProxyFieldId', '#form-checkbox-enableProxy-field');
+Cypress.expose('httpProxyFieldHelperId', '#form-input-httpProxy-field-helper');
+Cypress.expose('httpsProxyFieldHelperId', '#form-input-httpsProxy-field-helper');
+Cypress.expose('noProxyFieldHelperId', '#form-input-noProxy-field-helper');
+Cypress.expose('hostnameFieldHelperId', '#form-input-hostname-field-helper');
+Cypress.expose('generateIsoModalFooterText', 'Generate Discovery ISO');
+Cypress.expose('httpProxyFieldId', '#form-input-httpProxy-field');
+Cypress.expose('httpsProxyFieldId', '#form-input-httpsProxy-field');
+Cypress.expose('noProxyFieldId', '#form-input-noProxy-field');
+Cypress.expose('isoReadyToDownloadText', 'Discovery ISO is ready to be downloaded');
+Cypress.expose('editIso', `[data-testid=edit-iso-btn]`);
+Cypress.expose('closeIso', `[data-testid=close-iso-btn]`);
+Cypress.expose('hostRole', `[data-testid=host-role]`);
+Cypress.expose('hostnameFieldId', '#form-input-hostname-field');
+Cypress.expose('deleteHostSubmit', `[data-testid=delete-host-submit]`);
+Cypress.expose('hostInventoryDownloadDiscoveryIso', '#host-inventory-button-download-discovery-iso');
+Cypress.expose('hostInventoryDownloadDiscoveryIsoButtonText', 'Add host');
+Cypress.expose(
   'neverShareWarningText',
   'Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.',
 );
 
 // Baremetal Discovery
-Cypress.env('hostRowKebabMenuChangeHostnameText', 'Change hostname');
-Cypress.env('colHeaderCpuCoresId', '#col-header-cpucores');
-Cypress.env(
+Cypress.expose('hostRowKebabMenuChangeHostnameText', 'Change hostname');
+Cypress.expose('colHeaderCpuCoresId', '#col-header-cpucores');
+Cypress.expose(
   'bareMetalInventoryAddHostsButtonDownloadDiscoveryIso',
   '#bare-metal-inventory-add-host-button-download-discovery-iso',
 );
-Cypress.env(
+Cypress.expose(
   'useContainerNativeVirtualizationField',
   '#form-input-cnv-field',
 );
-Cypress.env('useOpenShiftDataFoundation', '#form-input-odf-field');
-Cypress.env('useOdfLogicalVolumeManagerField', '#form-checkbox-useOdfLogicalVolumeManager-field');
-Cypress.env('integrateWithVsphere', 'Integrate with vSphere');
+Cypress.expose('useOpenShiftDataFoundation', '#form-input-odf-field');
+Cypress.expose('useOdfLogicalVolumeManagerField', '#form-checkbox-useOdfLogicalVolumeManager-field');
+Cypress.expose('integrateWithVsphere', 'Integrate with vSphere');

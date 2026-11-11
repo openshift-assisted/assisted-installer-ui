@@ -18,13 +18,13 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
   });
 
   afterEach(() => {
-    Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH', false);
-    Cypress.env('AI_ERROR_CLUSTER_PATCH', false);
+    Cypress.expose('AI_FORBIDDEN_CLUSTER_PATCH', false);
+    Cypress.expose('AI_ERROR_CLUSTER_PATCH', false);
   });
 
   describe('Prevent invalid PATCH requests', () => {
     it('Should not update a cluster when no changes were done by the user', () => {
-      Cypress.env('AI_FORBIDDEN_CLUSTER_PATCH', true);
+      Cypress.expose('AI_FORBIDDEN_CLUSTER_PATCH', true);
 
       navbar.clickOnNavItem('Cluster details');
       commonActions.moveNextSteps(['Cluster details', 'Operators']);
@@ -33,7 +33,7 @@ describe('Assisted Installer UI behaviour - cluster updates', () => {
 
   describe('Should correctly behave on error responses', () => {
     it('Should get an indismissible error and a disabled Next button', () => {
-      Cypress.env('AI_ERROR_CLUSTER_PATCH', true);
+      Cypress.expose('AI_ERROR_CLUSTER_PATCH', true);
 
       navbar.clickOnNavItem('Operators');
       operatorsPage.singleOperatorsToggle().click();
