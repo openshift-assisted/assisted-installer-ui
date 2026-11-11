@@ -10,6 +10,7 @@ import { getDefaultOpenShiftVersion } from '../ui';
 import {
   baseDomainValidationSchema,
   dnsNameValidationSchema,
+  getProxyFieldsValidationSchema,
   nameValidationSchema,
   pullSecretValidationSchema,
 } from '../../validationSchemas';
@@ -88,6 +89,9 @@ export const getClusterDetailsInitialValues = ({
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
     controlPlaneCount = 3,
+    httpProxy = '',
+    httpsProxy = '',
+    noProxy = '',
   } = cluster || {};
 
   return {
@@ -107,6 +111,11 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
     ...parseDiskEncryption(cluster?.diskEncryption),
+
+    enableProxy: !!httpProxy || !!httpsProxy || !!noProxy,
+    httpProxy,
+    httpsProxy,
+    noProxy,
   };
 };
 
@@ -116,14 +125,16 @@ export const getClusterDetailsValidationSchema = ({
   validateUniqueName,
   isOcm,
   t,
+  isSingleClusterFeatureEnabled,
 }: {
   usedClusterNames: string[];
   pullSecretSet?: boolean;
   validateUniqueName?: boolean;
   isOcm?: boolean;
   t: TFunction;
+  isSingleClusterFeatureEnabled?: boolean;
 }) =>
-  Yup.lazy((values: { baseDnsDomain: string; isSNODevPreview: boolean }) => {
+  Yup.lazy((values: { baseDnsDomain: string; isSNODevPreview: boolean; enableProxy: boolean }) => {
     if (pullSecretSet) {
       return Yup.object({
         name: nameValidationSchema(
@@ -136,8 +147,11 @@ export const getClusterDetailsValidationSchema = ({
         baseDnsDomain: isOcm
           ? baseDomainValidationSchema(t).required(t('ai:Required field'))
           : dnsNameValidationSchema(t).required(t('ai:Required field')),
+
+        ...(isSingleClusterFeatureEnabled ? getProxyFieldsValidationSchema(values, t) : {}),
       });
     }
+
     return Yup.object({
       name: nameValidationSchema(
         t,
@@ -166,5 +180,6 @@ export const getClusterDetailsValidationSchema = ({
             }),
           ),
       }),
+      ...(isSingleClusterFeatureEnabled ? getProxyFieldsValidationSchema(values, t) : {}),
     });
   });

@@ -83,8 +83,7 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         const params = ClusterDetailsService.getClusterUpdateParams(
           values,
           resetPlatform,
-          cluster,
-          infraEnv,
+          isSingleClusterFeatureEnabled,
         );
         await handleClusterUpdate(cluster.id, params);
       } else {
@@ -92,7 +91,7 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         await handleClusterCreate(params);
       }
     },
-    [cluster, infraEnv, handleClusterCreate, handleClusterUpdate],
+    [cluster, infraEnv, isSingleClusterFeatureEnabled, handleClusterUpdate, handleClusterCreate],
   );
 
   const handleOnNext = React.useCallback(
@@ -143,6 +142,7 @@ export const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     pullSecretSet: cluster?.pullSecretSet,
     isOcm: true,
     t,
+    isSingleClusterFeatureEnabled,
   });
 
   return (
