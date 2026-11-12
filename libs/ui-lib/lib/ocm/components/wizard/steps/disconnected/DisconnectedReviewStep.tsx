@@ -24,6 +24,7 @@ import {
 } from '../../../../../common';
 import { ClusterWizardFooter, ClusterWizardNavigation } from '../../wizardComponents';
 import { useClusterWizardContext } from '../../clusterWizardContext';
+import { isFipsEnabled } from './fipsKernelArgument';
 
 const opSpecs = getOperatorSpecs(() => undefined, true);
 
@@ -102,6 +103,12 @@ export const DisconnectedReviewStep = () => {
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
+            <DescriptionListGroup>
+              <DescriptionListTerm>FIPS mode</DescriptionListTerm>
+              <DescriptionListDescription>
+                {isFipsEnabled(disconnectedInfraEnv) ? 'Enabled' : 'Disabled'}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>CPU architecture</DescriptionListTerm>
               <DescriptionListDescription>

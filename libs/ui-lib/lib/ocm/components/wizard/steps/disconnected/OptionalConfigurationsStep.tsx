@@ -23,12 +23,14 @@ import {
 import { useClusterWizardContext } from '../../clusterWizardContext';
 import { ClusterWizardNavigation, ClusterWizardFooter } from '../../wizardComponents';
 import { canonicalizeIp, getHostIpsFromInfraEnv } from '../staticIp/data/fromInfraEnv';
+import { getKernelArgumentsWithFips, isFipsEnabled } from './fipsKernelArgument';
 
 type OptionalConfigurationsValues = {
   sshPublicKey: string;
   rendezvousIp: string;
   enableAdditionalNtpSources: boolean;
   additionalNtpSources: string;
+  enableFips: boolean;
 };
 
 type OptionalConfigurationsFormProps = {
@@ -123,6 +125,12 @@ const OptionalConfigurationsForm: React.FC<OptionalConfigurationsFormProps> = ({
                   )
                 }
               />
+
+              <CheckboxField
+                label="Enable FIPS mode"
+                name="enableFips"
+                helperText="Builds an ISO that installs a FIPS-enabled cluster. This cannot be changed after the ISO is created."
+              />
             </Form>
           </GridItem>
         </Grid>
@@ -154,6 +162,7 @@ export const OptionalConfigurationsStep = () => {
     rendezvousIp: disconnectedInfraEnv?.rendezvousIp ?? '',
     enableAdditionalNtpSources: !!disconnectedInfraEnv?.additionalNtpSources?.trim(),
     additionalNtpSources: disconnectedInfraEnv?.additionalNtpSources ?? '',
+    enableFips: isFipsEnabled(disconnectedInfraEnv),
   };
 
   const handleNext = React.useCallback(
@@ -171,6 +180,7 @@ export const OptionalConfigurationsStep = () => {
           additionalNtpSources: values.enableAdditionalNtpSources
             ? values.additionalNtpSources
             : '',
+          kernelArguments: getKernelArgumentsWithFips(disconnectedInfraEnv, values.enableFips),
         });
 
         setDisconnectedInfraEnv(updatedInfraEnv);
