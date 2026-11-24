@@ -37,7 +37,7 @@ const ApproveTableRow: React.FC<React.PropsWithChildren<ApproveTableRowProps>> =
 const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Hostname'),
+      title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -62,7 +62,7 @@ const statusColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Status'),
+      title: t('ai:Status'),
       props: {
         id: 'col-header-status', // ACM jest tests require id over testId
       },

@@ -11,10 +11,10 @@ import {
   noProxyValidationSchema,
   pullSecretValidationSchema,
 } from './..';
-import { TFunction } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { CLUSTER_NAME_MAX_LENGTH } from './constants';
 
-const t: TFunction = (t: string) => t;
+const t = ((key: string) => key) as unknown as TFunction;
 
 describe('validationSchemas', () => {
   test('noProxyValidationSchema accepts input', async () => {
