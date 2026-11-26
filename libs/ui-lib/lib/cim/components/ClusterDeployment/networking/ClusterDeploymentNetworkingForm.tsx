@@ -95,10 +95,21 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   }, [infraEnvWithProxy, sameProxies, setFieldValue, touched.enableProxy, setFieldTouched]);
 
   React.useEffect(() => {
+    if (infraEnvsLoading || infraEnvsError) {
+      return;
+    }
     if (exclusiveNtpSources?.length && sameExclusiveNtpSources) {
       setFieldValue('ntpSources', exclusiveNtpSources, false);
+    } else {
+      setFieldValue('ntpSources', undefined, false);
     }
-  }, [exclusiveNtpSources, sameExclusiveNtpSources, setFieldValue]);
+  }, [
+    exclusiveNtpSources,
+    sameExclusiveNtpSources,
+    infraEnvsError,
+    infraEnvsLoading,
+    setFieldValue,
+  ]);
 
   let proxyConfig = <ProxyFields />;
   if (infraEnvWithProxy) {
