@@ -84,47 +84,45 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
       id="edit-ntp-sources-modal"
     >
       <ModalHeader title={t('ai:Edit NTP sources')} />
-      {isOpen && (
-        <Formik<EditNtpSourcesFormikValues>
-          initialValues={getEditNtpSourcesInitialValues(infraEnv)}
-          validate={getRichTextValidation(validationSchema(t))}
-          onSubmit={async (values) => {
-            try {
-              await onSubmit(values, infraEnv);
-              onClose();
-            } catch (err) {
-              setError(getErrorMessage(err));
-            }
-          }}
-          validateOnMount
-        >
-          {({ isSubmitting, isValid, submitForm }: FormikProps<EditNtpSourcesFormikValues>) => (
-            <>
-              <ModalBody>
-                <Stack hasGutter>
-                  <StackItem>
-                    <Alert isInline variant="warning" title={warningMsg} />
-                  </StackItem>
-                  <StackItem>
-                    <Form>
-                      <InfraEnvNtpSourcesFields />
-                      {error && <Alert variant="danger" title={error} />}
-                    </Form>
-                  </StackItem>
-                </Stack>
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
-                  {t('ai:Save')}
-                </Button>
-                <Button onClick={onClose} variant={ButtonVariant.secondary}>
-                  {t('ai:Cancel')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </Formik>
-      )}
+      <Formik<EditNtpSourcesFormikValues>
+        initialValues={getEditNtpSourcesInitialValues(infraEnv)}
+        validate={getRichTextValidation(validationSchema(t))}
+        onSubmit={async (values) => {
+          try {
+            await onSubmit(values, infraEnv);
+            onClose();
+          } catch (err) {
+            setError(getErrorMessage(err));
+          }
+        }}
+        validateOnMount
+      >
+        {({ isSubmitting, isValid, submitForm }: FormikProps<EditNtpSourcesFormikValues>) => (
+          <>
+            <ModalBody>
+              <Stack hasGutter>
+                <StackItem>
+                  <Alert isInline variant="warning" title={warningMsg} />
+                </StackItem>
+                <StackItem>
+                  <Form>
+                    <InfraEnvNtpSourcesFields />
+                    {error && <Alert variant="danger" title={error} />}
+                  </Form>
+                </StackItem>
+              </Stack>
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={() => void submitForm()} isDisabled={isSubmitting || !isValid}>
+                {t('ai:Save')}
+              </Button>
+              <Button onClick={onClose} variant={ButtonVariant.secondary}>
+                {t('ai:Cancel')}
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </Formik>
     </Modal>
   );
 };

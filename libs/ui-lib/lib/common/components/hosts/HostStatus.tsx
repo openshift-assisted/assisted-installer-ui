@@ -70,26 +70,22 @@ const HostStatus: React.FC<React.PropsWithChildren<HostStatusProps>> = ({
   const titleWithProgress = getTitleWithProgress(host, status);
   const hostIcon = getHostStatusIcon(icon, host.progress, status);
 
-  const renderStatusPopover = (label: React.ReactNode) => (
-    <HostStatusPopover
-      hideOnOutsideClick={!keepOnOutsideClick}
-      host={host}
-      onEditHostname={toggleHostname}
-      title={title}
-      validationsInfo={validationsInfo}
-      details={details}
-      zIndex={zIndex}
-      autoCSR={autoCSR}
-      additionalPopoverContent={additionalPopoverContent}
-      additionalBMHInfo={additionalBMHInfo}
-      openshiftVersion={openshiftVersion}
-      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-      NtpSyncFailureMessageComponent={NtpSyncFailureMessageComponent}
-      UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
-    >
-      {label}
-    </HostStatusPopover>
-  );
+  const hostStatusPopoverProps = {
+    hideOnOutsideClick: !keepOnOutsideClick,
+    host,
+    onEditHostname: toggleHostname,
+    title,
+    validationsInfo,
+    details,
+    zIndex,
+    autoCSR,
+    additionalPopoverContent,
+    additionalBMHInfo,
+    openshiftVersion,
+    AdditionalNTPSourcesDialogToggleComponent,
+    NtpSyncFailureMessageComponent,
+    UpdateDay2ApiVipDialogToggleComponent,
+  };
 
   return (
     <Flex
@@ -105,7 +101,7 @@ const HostStatus: React.FC<React.PropsWithChildren<HostStatusProps>> = ({
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
         {!children && !sublabel && !noPopover ? (
-          renderStatusPopover(titleWithProgress)
+          <HostStatusPopover {...hostStatusPopoverProps} label={titleWithProgress} />
         ) : (
           <FlexItem>{titleWithProgress}</FlexItem>
         )}
@@ -115,7 +111,7 @@ const HostStatus: React.FC<React.PropsWithChildren<HostStatusProps>> = ({
             className="pf-v6-u-font-size-xs"
             style={{ marginTop: 'calc(-1 * var(--pf-v6-l-flex--spacer--xs))' }}
           >
-            {renderStatusPopover(sublabel)}
+            <HostStatusPopover {...hostStatusPopoverProps} label={sublabel} />
           </FlexItem>
         )}
       </Flex>

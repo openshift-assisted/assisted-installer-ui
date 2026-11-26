@@ -61,7 +61,6 @@ export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
   httpProxy?: string;
   httpsProxy?: string;
   noProxy?: string;
-  /** Copied from InfraEnv exclusive NTP when saving networking (not user-editable). */
   ntpSources?: string[];
 };
 

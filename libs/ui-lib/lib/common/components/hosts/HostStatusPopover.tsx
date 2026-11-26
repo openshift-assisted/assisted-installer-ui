@@ -10,10 +10,11 @@ import { HostStatusPopoverFooter } from './HostStatusPopoverFooter';
 type HostStatusPopoverProps = HostStatusPopoverContentProps & {
   hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
   title: string;
+  label: React.ReactNode;
   zIndex?: number;
 };
 
-export const HostStatusPopover: React.FC<React.PropsWithChildren<HostStatusPopoverProps>> = ({
+export const HostStatusPopover: React.FC<HostStatusPopoverProps> = ({
   hideOnOutsideClick,
   host,
   onEditHostname,
@@ -28,7 +29,7 @@ export const HostStatusPopover: React.FC<React.PropsWithChildren<HostStatusPopov
   AdditionalNTPSourcesDialogToggleComponent,
   NtpSyncFailureMessageComponent,
   UpdateDay2ApiVipDialogToggleComponent,
-  children,
+  label,
 }) => (
   <Popover
     headerContent={<div>{title}</div>}
@@ -57,7 +58,7 @@ export const HostStatusPopover: React.FC<React.PropsWithChildren<HostStatusPopov
     closeBtnAriaLabel={`close-popover-${host.requestedHostname ?? ''}`}
   >
     <Button variant={'link'} isInline size="sm">
-      {children}
+      {label}
     </Button>
   </Popover>
 );

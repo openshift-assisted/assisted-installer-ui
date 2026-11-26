@@ -4,8 +4,6 @@ import { useFormikContext } from 'formik';
 import { AdditionalNTPSourcesField } from '../ui/formik';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-import './InfraEnvNtpSourcesFields.css';
-
 type InfraEnvNtpSourcesFormValues = {
   useAdditionalNTPSources: boolean;
   additionalNTPSources: string;
@@ -49,11 +47,7 @@ export const InfraEnvNtpSourcesFields: React.FC = () => {
   const ntpConfigurationRadioName = 'infra-env-ntp-configuration';
 
   return (
-    <FormGroup
-      fieldId="infra-env-ntp-sources"
-      className="ai-infra-env-ntp-sources-fields"
-      label={t('ai:NTP (Network Time Protocol) sources')}
-    >
+    <FormGroup fieldId="infra-env-ntp-sources" label={t('ai:NTP (Network Time Protocol) sources')}>
       <Stack hasGutter>
         <StackItem>
           <Radio
@@ -72,7 +66,7 @@ export const InfraEnvNtpSourcesFields: React.FC = () => {
           <Radio
             id="infra-env-ntp-additional"
             name={ntpConfigurationRadioName}
-            label={t('ai:Your own NTP sources')}
+            label={t('ai:Provide additional NTP sources')}
             isChecked={values.useAdditionalNTPSources}
             onChange={(_event, checked) => {
               if (checked) {
@@ -80,7 +74,7 @@ export const InfraEnvNtpSourcesFields: React.FC = () => {
               }
             }}
             description={t(
-              'ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.',
+              'ai:Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server.',
             )}
             body={
               values.useAdditionalNTPSources && (

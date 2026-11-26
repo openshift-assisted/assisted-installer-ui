@@ -73,6 +73,7 @@
   "ai:Additional certificates": "Additional certificates",
   "ai:Additional NTP sources": "Additional NTP sources",
   "ai:Additional NTP Sources": "Additional NTP sources",
+  "ai:Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server.": "Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server.",
   "ai:Address": "Address",
   "ai:Address is the host/ip that the NodePort service is exposed over.": "Address is the host or IP address that exposes the NodePort service.",
   "ai:Admin credentials are not available.": "Admin credentials are not available.",
@@ -222,7 +223,6 @@
   "ai:Configure host inventory settings": "Configure host inventory settings",
   "ai:Configure load balancer on Amazon Web Services for me.": "Configure load balancer on Amazon Web Services for me.",
   "ai:Configure the SSH key and proxy settings after the modal appears (optional).": "Configure the SSH key and proxy settings after the modal appears (optional).",
-  "ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.": "Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.",
   "ai:Configuring the host inventory settings will enable the Central Infrastructure Management.": "Configuring the host inventory settings will enable the Central Infrastructure Management.",
   "ai:Connected": "Connected",
   "ai:Container images availability": "Container images availability",
@@ -740,6 +740,7 @@
   "ai:Provide a valid DNS name or IP Address": "Provide a valid DNS name or IP Address",
   "ai:Provide a valid HTTP or HTTPS URL.": "Provide a valid HTTP or HTTPS URL.",
   "ai:Provide a valid HTTP URL.": "Provide a valid HTTP URL.",
+  "ai:Provide additional NTP sources": "Provide additional NTP sources",
   "ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process": "Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process",
   "ai:Provide as many labels as you can to narrow the list to relevant hosts only.": "Provide as many labels as you can to narrow the list to relevant hosts.",
   "ai:Provide the complete URL, including the protocol and parameters.": "Provide the complete URL, including the protocol and parameters.",
@@ -1043,6 +1044,5 @@
   "ai:You're using a third-party CNI": "You're using a third-party CNI",
   "ai:You're using an external platform": "You're using an external platform",
   "ai:You're using an external platform and a third-party CNI": "You're using an external platform and a third-party CNI",
-  "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP sources": "Your own NTP sources"
+  "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:"
 }
