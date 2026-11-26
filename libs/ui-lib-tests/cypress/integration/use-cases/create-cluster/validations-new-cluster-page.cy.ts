@@ -62,7 +62,7 @@ describe('Create a new cluster and show correct validations for every field', ()
     clusterDetailsPage.clearPullSecret();
     clusterDetailsPage.inputPullSecret(invalidPullSecret);
 
-    const errorSuffix = Cypress.env('OCM_USER')
+    const errorSuffix = Cypress.expose('OCM_USER')
       ? 'Learn more about pull secrets and view examples'
       : "A Red Hat account's pull secret can be found in";
     clusterDetailsPage.clickClusterDetailsBody();

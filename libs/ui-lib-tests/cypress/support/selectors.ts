@@ -17,6 +17,6 @@ Cypress.Commands.add(
     ),
 );
 
-Cypress.Commands.add('getClusterLink', (clusterId = Cypress.env('clusterId')) =>
+Cypress.Commands.add('getClusterLink', (clusterId = Cypress.expose('clusterId')) =>
   cy.get(`#cluster-link-${clusterId}`),
 );

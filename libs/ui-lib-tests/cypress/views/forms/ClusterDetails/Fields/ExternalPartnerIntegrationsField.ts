@@ -48,13 +48,13 @@ export class ExternalPartnerIntegrationsField {
     return cy
       .get(`[data-testid="EXTERNAL_PLATFORM_OCI-support-level"]`)
       .should('be.visible')
-      .should('contain.text', Cypress.env('techPreviewSupportLevel'));
+      .should('contain.text', Cypress.expose('techPreviewSupportLevel'));
   }
 
   static checkPlatformDevSupportLevel() {
     return cy
       .get(`[data-testid="EXTERNAL_PLATFORM_OCI-support-level"]`)
       .should('be.visible')
-      .should('contain.text', Cypress.env('devPreviewSupportLevel'));
+      .should('contain.text', Cypress.expose('devPreviewSupportLevel'));
   }
 }
