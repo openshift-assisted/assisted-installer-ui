@@ -948,7 +948,7 @@ __metadata:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@testing-library/cypress": ^9.0.0
     "@types/lodash": ^4.17.25
-    cypress: ^16.2.0
+    cypress: ^16.4.0
     cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
     lodash: ^4.18.1
@@ -3357,9 +3357,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^16.2.0":
-  version: 16.2.0
-  resolution: "cypress@npm:16.2.0"
+"cypress@npm:^16.4.0":
+  version: 16.4.0
+  resolution: "cypress@npm:16.4.0"
   dependencies:
     "@cypress/request": ^4.0.0
     "@cypress/xvfb": ^1.2.4
@@ -3395,14 +3395,14 @@ __metadata:
     proxy-from-env: 1.0.0
     request-progress: ^3.0.0
     supports-color: ^8.1.1
-    systeminformation: ^5.31.1
+    systeminformation: ^5.33.16
     tmp: ~0.2.4
     tree-kill: 1.2.2
     untildify: ^4.0.0
     yauzl: ^3.3.1
   bin:
     cypress: bin/cypress
-  checksum: faf7930b00027a0df3d949bd65ba1e1ba07c71cd3b626f647c309f4bf249e15a703be46c3a215669d1e63f1c1cf050f95540a3b2edfc6bffb791368d0acdb943
+  checksum: f22697d2d5d30ddf1d5f5dbe4c283fc6ccd4578935fb8b8aeebcd85dd6245803c5437dc7c446a2f26cfa4d504d1bcfc1eb2763a924c9fec36cb3bc66a0adefd4
   languageName: node
   linkType: hard
 
@@ -8819,12 +8819,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.31.1":
-  version: 5.33.16
-  resolution: "systeminformation@npm:5.33.16"
+"systeminformation@npm:^5.33.16":
+  version: 5.33.26
+  resolution: "systeminformation@npm:5.33.26"
   bin:
     systeminformation: lib/cli.js
-  checksum: c858674bb11a538619458811b4a8fa02fe0011b8fa7e671406c0f958a836e16c779d44940f0e767e5b28b4eab46c5ac3509cac143b0b25bc084ccbc8971826ae
+  checksum: 7c6f5c0627c7100767ad4265a6ff0930209a60676998716cac7bcc2876971b99aae29de917521971c87a0651c1d8bbdcbc0c7bb9952ccf6fb0254342d8cfa38e
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
