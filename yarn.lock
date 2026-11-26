@@ -1511,8 +1511,8 @@ __metadata:
   dependencies:
     "@openshift-assisted/ui-lib": "workspace:*"
     "@testing-library/cypress": ^9.0.0
-    "@types/lodash": ^4.14.121
-    cypress: ^16.2.0
+    "@types/lodash": ^4.17.25
+    cypress: ^16.4.0
     cypress-file-upload: 5.0.8
     cypress-fill-command: ^1.0.2
     lodash: ^4.17.23
@@ -3958,10 +3958,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.121, @types/lodash@npm:^4.14.175":
+"@types/lodash@npm:*, @types/lodash@npm:^4.14.175":
   version: 4.17.24
   resolution: "@types/lodash@npm:4.17.24"
   checksum: 2b254973145ecdf9b052d83f00ebaa111245f319d45b217c78f81cea8892fda81180fc749bd50a99c08f4e5efceb834c774d3f74153a50a9c4a28648343dc9f3
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.17.25":
+  version: 4.17.27
+  resolution: "@types/lodash@npm:4.17.27"
+  checksum: abdc4b1d03a42d8b1048e097e1c5d5b2093e787464f0e7684141736f92c84d4d26eaac283afa128a2e2bf87251bc6003b78f454bb86551c9a6d4d7778b03ed26
   languageName: node
   linkType: hard
 
@@ -6722,7 +6729,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^16.2.0":
+"cypress@npm:^16.4.0":
   version: 16.4.0
   resolution: "cypress@npm:16.4.0"
   dependencies:
