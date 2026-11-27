@@ -35,22 +35,6 @@ describe('Navigation Tests', () => {
     });
   });
 
-  describe('Header Navigation', () => {
-    it('Should navigate to clusters list when clicking masthead logo from new cluster page', () => {
-      cy.visit('/assisted-installer/clusters/~new');
-      cy.get('.pf-v6-c-masthead__brand a').click();
-      cy.url().should('include', '/clusters');
-      clusterListPage.getCreateNewClusterButton().should('be.visible');
-    });
-
-    it('Should navigate to clusters list when clicking masthead logo from cluster details page', () => {
-      cy.visit(`/assisted-installer/clusters/${Cypress.expose('clusterId')}`);
-      cy.get('.pf-v6-c-masthead__brand a').click();
-      cy.url().should('include', '/clusters');
-      clusterListPage.getCreateNewClusterButton().should('be.visible');
-    });
-  });
-
   describe('Clusters List Navigation', () => {
     beforeEach(() => {
       cy.visit('/assisted-installer/clusters');

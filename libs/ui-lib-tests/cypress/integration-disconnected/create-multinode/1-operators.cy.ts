@@ -38,8 +38,12 @@ describe(`Assisted Installer OVE Multinode Operators`, () => {
       // Select the Virtualization bundle
       operatorsPage.selectVirtualizationBundle();
       cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body.operator_bundles).to.deep.equal([
-          { id: 'virtualization', optional_operators: [] },
+        console.log(request.body);
+        expect(request.body.olm_operators).to.deep.equal([
+          { name: 'cnv' },
+          { name: 'nmstate' },
+          { name: 'mtv' },
+          { name: 'lso' },
         ]);
       });
 
@@ -55,14 +59,21 @@ describe(`Assisted Installer OVE Multinode Operators`, () => {
       // Select the LVMS standalone operator
       OperatorsForm.getOperatorCheckbox('lvm').click();
       cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body.olm_operators).to.deep.equal([{ name: 'lvm' }]);
+        expect(request.body.olm_operators).to.deep.equal([
+          { name: 'cnv' },
+          { name: 'nmstate' },
+          { name: 'mtv' },
+          { name: 'lso' },
+          { name: 'lvm' },
+        ]);
       });
       commonActions.verifyNextIsEnabled();
 
       // Deselect the Virtualization bundle
       operatorsPage.deselectVirtualizationBundle();
+
       cy.wait('@update-cluster').then(({ request }) => {
-        expect(request.body.operator_bundles).to.deep.equal([]);
+        expect(request.body.olm_operators).to.deep.equal([{ name: 'lvm' }]);
       });
       operatorsPage.assertVirtualizationBundleSelected(false);
       OperatorsForm.assertOperatorCheckbox('cnv', { checked: false, disabled: false });
