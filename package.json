@@ -2,18 +2,18 @@
   "description": "The Assisted Installer UI",
   "devDependencies": {
     "@openshift-assisted/toolbox": "workspace:*",
-    "@vitest/ui": "^0.34.5",
-    "dpdm": "^3.14.0",
-    "eslint": "^8.36.0",
-    "happy-dom": "^20.8.9",
-    "msw": "^2.0.0",
+    "@vitest/ui": "^5.0.5",
+    "dpdm": "^4.2.0",
+    "eslint": "^8.57.1",
+    "happy-dom": "^21.0.4",
+    "msw": "^2.14.6",
     "prettier": "2.8.8",
     "rimraf": "^6.0.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.5"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
   },
   "engines": {
-    "node": ">=14",
+    "node": ">=24.0.0",
     "yarn": ">=3.4.0"
   },
   "license": "Apache-2.0",
@@ -36,6 +36,8 @@
     "test:open:dev": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:dev",
     "test:open": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open",
     "test:run": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run",
+    "test:open:disconnected": "yarn workspace @openshift-assisted/ui-lib-tests run cy:open:disconnected",
+    "test:run:disconnected": "yarn workspace @openshift-assisted/ui-lib-tests run cy:run:disconnected",
     "test:unit": "yarn workspaces foreach -v run test",
     "start:assisted_ui": "yarn workspace @openshift-assisted/assisted-ui serve",
     "start:assisted_disconnected_ui": "yarn workspace @openshift-assisted/assisted-disconnected-ui serve",
