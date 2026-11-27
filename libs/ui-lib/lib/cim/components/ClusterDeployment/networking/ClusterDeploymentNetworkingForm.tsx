@@ -42,6 +42,8 @@ type ClusterDeploymentNetworkingFormProps = {
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
   infraEnvWithProxy: InfraEnvK8sResource | undefined;
   sameProxies: boolean;
+  exclusiveNtpSources?: string[];
+  sameExclusiveNtpSources: boolean;
   infraEnvsError: string | undefined;
   infraEnvsLoading: boolean;
   isPreviewOpen: boolean;
@@ -58,6 +60,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   onValuesChanged,
   infraEnvWithProxy,
   sameProxies,
+  exclusiveNtpSources,
+  sameExclusiveNtpSources,
   infraEnvsError,
   infraEnvsLoading,
   isPreviewOpen,
@@ -89,6 +93,23 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
       }
     }
   }, [infraEnvWithProxy, sameProxies, setFieldValue, touched.enableProxy, setFieldTouched]);
+
+  React.useEffect(() => {
+    if (infraEnvsLoading || infraEnvsError) {
+      return;
+    }
+    if (exclusiveNtpSources?.length && sameExclusiveNtpSources) {
+      setFieldValue('ntpSources', exclusiveNtpSources, false);
+    } else {
+      setFieldValue('ntpSources', undefined, false);
+    }
+  }, [
+    exclusiveNtpSources,
+    sameExclusiveNtpSources,
+    infraEnvsError,
+    infraEnvsLoading,
+    setFieldValue,
+  ]);
 
   let proxyConfig = <ProxyFields />;
   if (infraEnvWithProxy) {

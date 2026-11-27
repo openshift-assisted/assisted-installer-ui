@@ -63,7 +63,14 @@ export const NetworkingForm = ({
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = React.useState(false);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const [nextRequested, setNextRequested] = React.useState(false);
-  const { infraEnvWithProxy, infraEnvsError, infraEnvsLoading, sameProxies } = useInfraEnvProxies({
+  const {
+    infraEnvWithProxy,
+    infraEnvsError,
+    infraEnvsLoading,
+    sameProxies,
+    exclusiveNtpSources,
+    sameExclusiveNtpSources,
+  } = useInfraEnvProxies({
     fetchInfraEnv,
     agents,
   });
@@ -166,6 +173,8 @@ export const NetworkingForm = ({
             agentClusterInstall={agentClusterInstall}
             agents={agents}
             sameProxies={sameProxies}
+            exclusiveNtpSources={exclusiveNtpSources}
+            sameExclusiveNtpSources={sameExclusiveNtpSources}
             infraEnvsError={infraEnvsError}
             infraEnvWithProxy={infraEnvWithProxy}
             infraEnvsLoading={infraEnvsLoading}

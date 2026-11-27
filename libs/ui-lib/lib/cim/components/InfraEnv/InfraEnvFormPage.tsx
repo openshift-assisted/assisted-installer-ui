@@ -31,8 +31,6 @@ import {
   RadioField,
   PopoverIcon,
   pullSecretValidationSchema,
-  CheckboxField,
-  AdditionalNTPSourcesField,
   richNameValidationSchema,
   getRichTextValidation,
   nameValidationMessages,
@@ -43,6 +41,7 @@ import {
   CpuArchitecture,
   getOCPStaticIPDocLink,
   httpsProxyValidationSchema,
+  InfraEnvNtpSourcesFields,
 } from '../../../common';
 
 import './infra-env.css';
@@ -68,8 +67,10 @@ export type EnvironmentStepFormValues = {
     CpuArchitecture,
     CpuArchitecture.x86 | CpuArchitecture.ARM | CpuArchitecture.s390x
   >;
-  enableNtpSources: boolean;
-  additionalNtpSources: string;
+  useAdditionalNTPSources: boolean;
+  additionalNTPSources: string;
+  useNTPSources: boolean;
+  ntpSources: string;
   osImageVersion?: string;
 };
 
@@ -104,7 +105,12 @@ const validationSchema = (usedNames: string[], t: TFunction) =>
               return parts.length === 2;
             }),
         ),
-      additionalNtpSources: ntpSourceValidationSchema(t),
+      additionalNTPSources: values.useAdditionalNTPSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
+      ntpSources: values.useNTPSources
+        ? ntpSourceValidationSchema(t, false)
+        : ntpSourceValidationSchema(t),
     }),
   );
 
@@ -120,8 +126,10 @@ const initialValues: EnvironmentStepFormValues = {
   labels: [],
   networkType: 'dhcp',
   cpuArchitecture: CpuArchitecture.x86,
-  enableNtpSources: false,
-  additionalNtpSources: '',
+  useAdditionalNTPSources: false,
+  additionalNTPSources: '',
+  useNTPSources: false,
+  ntpSources: '',
   osImageVersion: '',
 };
 
@@ -247,29 +255,7 @@ const InfraEnvForm: React.FC<React.PropsWithChildren<InfraEnvFormProps>> = ({
           <PullSecretField isOcm={false} />
           <UploadSSH />
           <ProxyFields />
-          <CheckboxField
-            label={t('ai:Add your own NTP (Network Time Protocol) sources')}
-            name="enableNtpSources"
-            helperText={
-              <p>
-                {t(
-                  'ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.',
-                )}
-              </p>
-            }
-            body={
-              values.enableNtpSources && (
-                <Grid hasGutter>
-                  <AdditionalNTPSourcesField
-                    name="additionalNtpSources"
-                    helperText={t(
-                      'ai:A comma separated list of IP or domain names of the NTP pools or servers.',
-                    )}
-                  />
-                </Grid>
-              )
-            }
-          />
+          <InfraEnvNtpSourcesFields />
         </Form>
       </StackItem>
     </Stack>

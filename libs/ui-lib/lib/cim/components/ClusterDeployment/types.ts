@@ -61,6 +61,7 @@ export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
   httpProxy?: string;
   httpsProxy?: string;
   noProxy?: string;
+  ntpSources?: string[];
 };
 
 export type AgentRoleCounts = {
