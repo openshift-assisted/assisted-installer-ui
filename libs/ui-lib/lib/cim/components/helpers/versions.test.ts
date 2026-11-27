@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { TFunction } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { CpuArchitecture } from '../../../common/types/cpuArchitecture';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
@@ -14,7 +14,7 @@ import {
 } from './versions';
 import { OpenshiftVersionOptionType } from '../../../common/types/versions';
 
-const t: TFunction = (t: string) => t;
+const t = ((key: string) => key) as unknown as TFunction;
 
 const ClusterImageSetApiVersion = 'hive.openshift.io/v1';
 const ClusterImageSetKind = 'ClusterImageSet';

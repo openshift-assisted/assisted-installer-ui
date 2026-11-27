@@ -41,7 +41,7 @@ export const ClusterDeploymentHostsDiscoveryStep = ({
   );
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(infraEnvAgents), [infraEnvAgents]);
 
-  const errors = [];
+  const errors: string[] = [];
   if (getIsSNOCluster(agentClusterInstall)) {
     infraEnvAgents.length > 1 &&
       errors.push(t('ai:Single node cluster cannot contain more than 1 host.'));

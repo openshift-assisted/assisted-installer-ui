@@ -29,7 +29,7 @@ export const agentHostnameColumn = (
   canEditBMH?: HostsTableActions['canEditBMH'],
 ): TableRow<Host> => ({
   header: {
-    title: t<string>('ai:Hostname'),
+    title: t('ai:Hostname'),
     props: {
       id: 'col-header-hostname', // ACM jest tests require id over testId
       modifier: 'breakWord',
@@ -76,7 +76,7 @@ export const discoveryTypeColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Discovery type'),
+      title: t('ai:Discovery type'),
       props: {
         id: 'col-header-discovery-type',
       },
@@ -84,16 +84,16 @@ export const discoveryTypeColumn = (
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let discoveryType = t<string>('ai:Unknown');
+      let discoveryType = t('ai:Unknown');
       if (agent) {
         // eslint-disable-next-line no-prototype-builtins
         discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? t<string>('ai:BMC')
-          : t<string>('ai:Discovery ISO');
+          ? t('ai:BMC')
+          : t('ai:Discovery ISO');
       } else {
         const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
         if (bmh) {
-          discoveryType = t<string>('ai:BMC');
+          discoveryType = t('ai:BMC');
         }
       }
       return {
@@ -130,7 +130,7 @@ export const agentStatusColumn = ({
 }: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Status'),
+      title: t('ai:Status'),
       props: {
         id: 'col-header-infraenvstatus',
       },
@@ -187,7 +187,7 @@ export const clusterColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Cluster'),
+      title: t('ai:Cluster'),
       props: {
         id: 'col-header-cluster',
       },
@@ -227,7 +227,7 @@ export const clusterColumn = (
 export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: t<string>('ai:Infrastructure env'),
+      title: t('ai:Infrastructure env'),
       props: {
         id: 'col-header-infraenv',
       },
