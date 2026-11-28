@@ -13,6 +13,7 @@ import {
   ValidationGroup as HostValidationGroup,
   Validation as HostValidation,
 } from '../../types/hosts';
+import { ProxyFieldsType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { WizardStepsValidationMap } from './validationsInfoUtils';
 
@@ -33,7 +34,7 @@ export type ClusterDetailsValues = {
   customOpenshiftSelect: string | null;
   userManagedNetworking: boolean;
   controlPlaneCount: number;
-};
+} & ProxyFieldsType;
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {
   hosts?: Host[];

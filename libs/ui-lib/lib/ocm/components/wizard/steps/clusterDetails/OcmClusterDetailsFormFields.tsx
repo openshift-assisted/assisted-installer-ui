@@ -20,6 +20,7 @@ import {
   useTranslation,
   DiskEncryptionControlGroup,
   useNewFeatureSupportLevel,
+  ProxyFields,
 } from '../../../../../common';
 import { useFeature, useSupportLevelsAPI } from '../../../../hooks';
 import { HostsNetworkConfigurationType } from '../../../../services';
@@ -148,6 +149,7 @@ export const OcmClusterDetailsFormFields = ({
     values.controlPlaneCount,
     setFieldValue,
   ]);
+
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -227,6 +229,8 @@ export const OcmClusterDetailsFormFields = ({
           isDisabled={platform === 'external'}
         />
       )}
+
+      {isSingleClusterFeatureEnabled && <ProxyFields />}
 
       <DiskEncryptionControlGroup
         values={values}

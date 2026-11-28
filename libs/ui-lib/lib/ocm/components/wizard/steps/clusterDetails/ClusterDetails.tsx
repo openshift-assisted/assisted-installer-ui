@@ -66,6 +66,7 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           cluster?.tags,
           params,
         );
+
         dispatch(updateCluster(updatedCluster));
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
@@ -77,7 +78,7 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
         }
       }
     },
-    [clearAlerts, addAlert, dispatch, cluster?.tags, clusterWizardContext],
+    [clearAlerts, cluster?.tags, dispatch, clusterWizardContext, addAlert],
   );
 
   const handleClusterCreate = React.useCallback(
@@ -96,6 +97,7 @@ export const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
           isAssistedMigration,
           isSingleClusterFeatureEnabled,
         );
+
         void navigate(`../${cluster.id}`, { state: ClusterWizardFlowStateNew });
 
         if (isAssistedMigration) {
